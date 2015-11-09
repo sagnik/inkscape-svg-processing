@@ -1,0 +1,11 @@
+InfoKey: Creator
+InfoValue: dvips(k) 5.92b Copyright 2002 Radical Eye Software
+InfoKey: Title
+InfoValue: v0_existNIPS.dvi
+InfoKey: Producer
+InfoValue: GPL Ghostscript 8.01
+InfoKey: ModDate
+InfoValue: D:20061029012149
+InfoKey: CreationDate
+InfoValue: D:20061029012149
+NumberOfPages: 8

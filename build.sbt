@@ -1,7 +1,7 @@
 
 organization := "edu.ist.psu.sagnik.research"
 
-name := "pdffigurestosvg"
+name := "svgxmlprocessing"
 
 version := "0.0.1"
 
