@@ -3,7 +3,7 @@ package edu.ist.psu.sagnik.research.svgxmlprocess.impl
 import edu.ist.psu.sagnik.research.svgxmlprocess.model.{pathOp, SVGPath}
 import edu.ist.psu.sagnik.research.svgxmlprocess.reader.XMLReader
 
-import scala.xml.{Node, NodeSeq}
+import scala.xml.{Elem, Node, NodeSeq}
 
 /**
  * Created by szr163 on 11/8/15.
@@ -18,6 +18,8 @@ object ProcessXML {
 
     val topLevelPaths = xmlContent \ "path"
     val lowerLevelPaths=iterateOverGroups(xmlContent \ "g",Seq.empty[PathGroups],Seq.empty[String])
+
+    val gIdMap=getGroupParents((xmlContent \\ "g"),(xmlContent \\ "g").map(a=>a \@ "id").groupBy(x=>x))
 
     val topLevelSVGPaths=
       topLevelPaths.map(x =>
@@ -58,8 +60,12 @@ object ProcessXML {
       val newGId=tlGs.head \@ "id" //TODO: What happens if the group doesn't have an ID?
       val thisTLGpathGIDs=(tlGs.head \ "path").map(x=>PathGroups(x,gIdsSofar:+newGId))
       iterateOverGroups(tlGs.head \"g",pathGIDs++thisTLGpathGIDs,gIdsSofar:+newGId)
+
     }
 
-
+  def getGroupParents(tlGs: NodeSeq, parentMap:Map[String,Seq[String]])={
+    //parentMap.foreach{x=>println(s"[key]: ${x._1} [values]: ${x._2}")}
+    if (tlGs.isEmpty)
+  }
 
 }
