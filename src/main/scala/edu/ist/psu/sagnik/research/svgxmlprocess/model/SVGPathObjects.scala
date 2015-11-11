@@ -15,4 +15,6 @@ case class SVGPath(id:String, pdContent:String, pContent:String, pOps:Seq[pathOp
 
 case class Group(gContent:String,transformOps:Seq[transformOp])
 
+case class PathGroups(path:Node,gIds:Seq[String])
+
 //case class SVGPathwithBB(pContent:String, )

@@ -3,7 +3,7 @@ package edu.ist.psu.sagnik.research.svgxmlprocess.test
 /**
  * Created by szr163 on 11/8/15.
  */
-import edu.ist.psu.sagnik.research.svgxmlprocess.impl.ProcessXML
+import edu.ist.psu.sagnik.research.svgxmlprocess.impl.SVGPathWithGroups
 import org.scalatest.FunSpec
 
 class SVGPathOutputTest extends FunSpec {
@@ -12,7 +12,7 @@ class SVGPathOutputTest extends FunSpec {
   describe("testing the SVG output by printing") {
     import edu.ist.psu.sagnik.research.svgxmlprocess.test.DataLocation._
     it("should print the path info.") {
-      val results=ProcessXML(svgFileLoc)
+      val results=SVGPathWithGroups(svgFileLoc)
 
       results.foreach(x=>println(s"[path content]: ${x.pContent}, [path id]: ${x.id}, [groupIds]: ${x.gIds}"))
 
