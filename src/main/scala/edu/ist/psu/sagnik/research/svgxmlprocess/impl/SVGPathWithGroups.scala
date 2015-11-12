@@ -1,9 +1,9 @@
 package edu.ist.psu.sagnik.research.svgxmlprocess.impl
 
-import edu.ist.psu.sagnik.research.svgxmlprocess.model.{PathGroups, pathOp, SVGPath}
+import edu.ist.psu.sagnik.research.svgxmlprocess.model.{pathOp, SVGPath}
 import edu.ist.psu.sagnik.research.svgxmlprocess.reader.XMLReader
 
-import scala.xml.{NodeSeq}
+import scala.xml.{Node, NodeSeq}
 
 /**
  * Created by szr163 on 11/8/15.
@@ -11,6 +11,9 @@ import scala.xml.{NodeSeq}
 
 
 object SVGPathWithGroups {
+
+  case class PathGroups(path:Node,gIds:Seq[String])
+
   def apply(fileLoc:String)=getPaths(XMLReader(fileLoc))
 
   def getPaths(xmlContent:scala.xml.Elem):Seq[SVGPath]= {
