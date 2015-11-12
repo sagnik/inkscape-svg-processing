@@ -1,6 +1,8 @@
 #include the PDFs in test folder, but not the outputs
+
 src/test/resources/pdfs
 !src/test/resources/pdfs/*.pdf
+src/main/scala/edu/ist/psu/sagnik/research/svgxmlprocess/parsers/test/
 data/
 *~
 *.class
