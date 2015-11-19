@@ -4,17 +4,19 @@ import scala.util.parsing.combinator._
 import scala.util.parsing.combinator.RegexParsers
 /**
  * Created by sagnik on 11/12/15.
- */
+ * ? => opt
+ * * => rep
+ * */
 
 class SVGPathParser extends RegexParsers {
 
-  def wsp: Parser[String]= """ """.r ^^ {_.toString}
+  override def skipWhitespace = false
 
-  def comma: Parser[String] = """,""".r ^^ {_.toString}
+  def wsp: Parser[String]= "\\s".r ^^ {_.toString}
 
   def digit:Parser[String]="""0|1|2|3|4|5|6|7|8|9""".r ^^ {_.toString}
 
-  def digit_sequence: Parser[String]=rep(digit) ^^{_.mkString("")}
+  def digit_sequence: Parser[String]= rep(digit) ^^{_.mkString("")} //digit~digit_sequence ^^{_.toString}|digit^^{_.toString}
 
   def sign:Parser[String]="""\+|\-""".r ^^{_.toString}
 
@@ -46,6 +48,12 @@ class SVGPathParser extends RegexParsers {
 
   def integer_constant:Parser[String]= digit_sequence^^{_.toString}
 
+  def comma: Parser[String] = """,""".r ^^ {_.toString}
+
+  def comma_wsp: Parser[String] = wsp~rep(wsp)~opt(comma)~rep(wsp)^^ { case _ => ","} | comma~rep(wsp)^^{case _ => ","}
+
+  def flag:Parser[String] = """0|1""".r ^^{_.toString}
+
   def number:Parser[Double]=
     opt(sign)~floating_point_constant^^{
       case Some(s)~fc => if ("-".equals(s)) ("-"+fc).toDouble else fc.toDouble
@@ -58,6 +66,15 @@ class SVGPathParser extends RegexParsers {
 
   def nonnegative_number:Parser[Double]=
     floating_point_constant^^{_.toDouble}|integer_constant^^{_.toDouble}
+
+  def coordinate:Parser[Double] = number ^^{println(s"[matched c]"); _.toDouble}
+
+  def coordinate_pair:Parser[(Double,Double)]=coordinate~comma_wsp~coordinate^^{
+    case cr1~cm~cr2=>(cr1,cr2)
+    //case cr1~Some(cm)~cr2=> (cr1,cr2)
+    //case cr1~None~cr2 => (cr1,cr2)
+  }
+
 
 
   /*
@@ -72,8 +89,9 @@ class SVGPathParser extends RegexParsers {
 
 object TestSVGPathParser extends SVGPathParser{
   def main(args: Array[String]) = {
-    parse(floating_point_constant, "12.3e-2") match {
-      case Success(matched,_) => println(matched)
+    //parse(comma_wsp, ",") match {
+    parse(coordinate_pair, "12, 13") match {
+      case Success(matched,_) => println(s"[matched]: ${matched}")
       case Failure(msg,_) => println("FAILURE: " + msg)
       case Error(msg,_) => println("ERROR: " + msg)
     }
