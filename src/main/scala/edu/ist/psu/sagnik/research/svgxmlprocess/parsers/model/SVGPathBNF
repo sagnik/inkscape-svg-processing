@@ -67,6 +67,7 @@ smooth-quadratic-bezier-curveto:
 smooth-quadratic-bezier-curveto-argument-sequence:
     coordinate-pair
     | coordinate-pair comma-wsp? smooth-quadratic-bezier-curveto-argument-sequence
+------------------------------------------------------------------------------------------
 elliptical-arc:
     ( "A" | "a" ) wsp* elliptical-arc-argument-sequence
 elliptical-arc-argument-sequence:
