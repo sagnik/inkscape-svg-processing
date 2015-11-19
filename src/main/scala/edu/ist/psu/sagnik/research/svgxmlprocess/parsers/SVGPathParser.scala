@@ -27,12 +27,12 @@ class SVGPathParser extends RegexParsers {
   }
 
   def fractional_constant:Parser[String]=
-    opt(digit_sequence)~""".""".r~digit_sequence ^^{
+    opt(digit_sequence)~"""\.""".r~digit_sequence ^^{
       case Some(ds1)~dot~ds2 => ds1+"."+ds2
       case None~dot~ds2=> ds2
       case _ => ""
     } |
-      digit_sequence~""".""".r  ^^{
+      digit_sequence~"""\.""".r  ^^{
         case ds~dot=>ds.toString
         case _ => ""
       }
@@ -50,7 +50,7 @@ class SVGPathParser extends RegexParsers {
 
   def comma: Parser[String] = """,""".r ^^ {_.toString}
 
-  def comma_wsp: Parser[String] = wsp~rep(wsp)~opt(comma)~rep(wsp)^^ { case _ => ","} | comma~rep(wsp)^^{case _ => ","}
+  def comma_wsp: Parser[String] = wsp~rep(wsp)~opt(comma)~rep(wsp)^^ { _.toString} | comma~rep(wsp)^^{_.toString}
 
   def flag:Parser[String] = """0|1""".r ^^{_.toString}
 
@@ -61,36 +61,25 @@ class SVGPathParser extends RegexParsers {
     } |
       opt(sign)~integer_constant^^{
         case Some(s)~ic => if ("-".equals(s)) ("-"+ic).toDouble else ic.toDouble
-        case None~ic => ic.toDouble
+        case None~ic => {ic.toDouble}
       }
 
   def nonnegative_number:Parser[Double]=
     floating_point_constant^^{_.toDouble}|integer_constant^^{_.toDouble}
 
-  def coordinate:Parser[Double] = number ^^{println(s"[matched c]"); _.toDouble}
+  def coordinate:Parser[Double] = number ^^{ _.toDouble}
 
-  def coordinate_pair:Parser[(Double,Double)]=coordinate~comma_wsp~coordinate^^{
-    case cr1~cm~cr2=>(cr1,cr2)
-    //case cr1~Some(cm)~cr2=> (cr1,cr2)
-    //case cr1~None~cr2 => (cr1,cr2)
+  def coordinate_pair:Parser[(Double,Double)]=coordinate~opt(comma_wsp)~coordinate^^{
+    case cr1~Some(cm)~cr2=> (cr1,cr2)
+    case cr1~None~cr2 => (cr1,cr2)
   }
 
-
-
-  /*
-  def nonnegative_number: Parser[String]=
-    integer-constant
-  | floating-point-constant
-  number:
-    sign? integer-constant
-  | sign? floating-point-constant
-  */
 }
 
 object TestSVGPathParser extends SVGPathParser{
   def main(args: Array[String]) = {
-    //parse(comma_wsp, ",") match {
-    parse(coordinate_pair, "12, 13") match {
+    //parse(fractional_constant, "12.20") match {
+    parse(coordinate_pair, "12 , 20") match {
       case Success(matched,_) => println(s"[matched]: ${matched}")
       case Failure(msg,_) => println("FAILURE: " + msg)
       case Error(msg,_) => println("ERROR: " + msg)
