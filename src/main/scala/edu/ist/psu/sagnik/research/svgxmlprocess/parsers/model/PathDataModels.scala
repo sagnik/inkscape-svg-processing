@@ -32,6 +32,7 @@ object EllispeCommand{
   /*input is assumed to be degrees, not radians*/
   def digitReduce(d:Double)=d-d%0.01
   def D2R(deg:Double)=deg*(scala.math.Pi/180)
+  def R2D(deg:Double)=deg/(scala.math.Pi/180)
   def cosine(deg:Double)=digitReduce(scala.math.cos(D2R(deg)))
   def sine(deg:Double)=digitReduce(scala.math.sin(D2R(deg)))
 
@@ -61,13 +62,15 @@ object EllispeCommand{
   * */
 
   def getBoundingBoxOnePath(lep:CordPair,isAbs:Boolean,ep: EllipsePath):Rectangle={
-      val center=getCenter(lep,isAbs,ep)
-      val xmin=
+    val center=getCenter(lep,isAbs,ep)
+    val xOptTheta=digitReduce(R2D(scala.math.atan(-(ep.ry/ep.rx)*scala.math.tan(D2R(ep.rotation)))))
+    val yOptTheta=digitReduce(R2D(scala.math.atan(ep.ry/(ep.rx*scala.math.tan(D2R(ep.rotation))))))
+    val xmin=
   }
 
   def getEndPoint(lep:CordPair, isAbs:Boolean, ePath: EllipsePath):CordPair=
     if (isAbs) ePath.endCordPair
-  else CordPair(lep.x+ePath.endCordPair.x,lep.y+ePath.endCordPair.y)
+    else CordPair(lep.x+ePath.endCordPair.x,lep.y+ePath.endCordPair.y)
 }
 
 case class SmQBC(isAbsolute:Boolean,args: Seq[CordPair]) extends PathCommand//smooth-quadratic-bezier-curveto
