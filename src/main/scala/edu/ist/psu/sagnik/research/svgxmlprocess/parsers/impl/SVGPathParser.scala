@@ -242,7 +242,7 @@ object TestSVGPathParser extends SVGPathParser{
      //   parse(number_sequence, "1") match {
      //  parse(wsp, " ") match {
     //    parse(coordinate_pair, "12    20") match {
-    parse(svg_path, "M600,350 l 50,-25\n           a25,25 -30 0,1 50,-25 l 50,-25") match {
+    parse(svg_path, "M80 230\n           A 45 45, 0, 0, 1, 125 275") match {
       case Success(matched,_) => println(s"[matched]: ${matched}")
       case Failure(msg,_) => println("FAILURE: " + msg)
       case Error(msg,_) => println("ERROR: " + msg)
