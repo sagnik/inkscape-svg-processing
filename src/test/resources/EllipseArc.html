@@ -1,0 +1,265 @@
+
+<html>
+<head>
+    <title>Understanding SVG Arc Paths</title>
+
+    <style type='text/css'>
+        div#drawing
+        {
+        border: 1px solid black;/**/
+        width: 100%;
+        height: 99.9%;
+        }
+        svg
+        {
+        /*border: 1px solid red;*/
+        }
+        pre#svgcode
+        {
+        border: 3px solid black;
+        padding: 10px;
+        font-size: 20px;
+        /*font-weight: bold;
+        font-family: arial;*/
+        clear: both;
+        }
+        span#absrel
+        {
+        border: 1px dotted grey;
+        }
+        span#large-arc-flag
+        {
+        border: 1px dotted grey;
+        }
+        span#sweep-flag
+        {
+        border: 1px dotted grey;
+        }
+
+        div#explanation
+        {
+        max-width: 25em;
+        float: left;
+        border: 1px solid black;
+        padding: 10px;
+        margin-bottom: 10px;
+        margin-right: 10px;
+        }
+        div#knownissues
+        {
+        float: left;
+        border: 1px solid black;
+        padding: 10px;
+        margin-bottom: 10px;
+        margin-left: 10px;
+        }
+    </style>
+
+    <script type="text/javascript" src="raphael.2.1.0.js"></script>
+    <script type="text/javascript" src="sylvester.js"></script>
+
+    <script type="text/javascript">
+			/*var points = [
+							[150, 150,   0],
+							[ 50,  50, 120],
+							[200, 200, 240]
+						];*/
+			var points = [
+							[150, 150,   0],
+							[ 76,  55, 120],
+							[433, 278, 240]
+						];
+			var absolute = true;
+			var largeArc = true;
+			var sweep = true;
+			
+			var Cx = 0;
+			var Cy = 0;
+			
+			var body;
+							
+			window.onload = function() {
+				body = document.body;
+				
+				paper = new Raphael(document.getElementById('drawing'));
+				
+				refresh();
+			}
+			function makeOnMove(i)
+			{
+				return function(dx,dy,x,y,event)
+						{
+							points[i][0] = x - paper.canvas.offsetLeft;
+							points[i][1] = y - paper.canvas.offsetTop;
+							refresh();
+						}
+			}
+			function refresh()
+			{
+				paper.clear();
+				
+				var A, L, S, ex, ey;
+				
+				if(absolute)
+				{
+					A = 'A';
+					ex = points[2][0];
+					ey = points[2][1];
+				}
+				else
+				{
+					A = 'a';
+					ex = points[2][0] - points[0][0];
+					ey = points[2][1] - points[0][1];
+				}
+				L = (largeArc)?1:0;
+				S = (sweep)?1:0;
+
+
+				// Calculate the centre of the ellipse
+				// Based on http://www.w3.org/TR/SVG/implnote.html#ArcConversionEndpointToCenter
+				var x1 = points[0][0];
+				var y1 = points[0][1];
+				var x2 = points[2][0];
+				var y2 = points[2][1];
+				var fA = L;
+				var fS = S;
+				var rx = points[1][0];
+				var ry = points[1][1];
+				var phi = 0;
+				alert(x1+" : "+y1+" : "+x2+" : "+y2)
+				
+				// Step 1: Compute (x1′, y1′)
+				var M = $M([
+								[ Math.cos(phi), Math.sin(phi)],
+								[-Math.sin(phi), Math.cos(phi)]
+							]);
+				var V = $V( [ (x1-x2)/2, (y1-y2)/2 ] );
+				var P = M.multiply(V);
+				
+				var x1p = P.e(1);
+				var y1p = P.e(2);
+
+
+				// Ensure radii are large enough
+				// Step 1: Ensure radii are non-zero
+				// Step 2: Ensure radii are positive
+				rx = Math.abs(rx);
+				ry = Math.abs(ry);
+				// Step 3: Ensure radii are large enough
+				var lambda = ( (x1p * x1p) / (rx * rx) ) + ( (y1p * y1p) / (ry * ry) );
+				if(lambda > 1)
+				{
+					rx = Math.sqrt(lambda) * rx;
+					ry = Math.sqrt(lambda) * ry;
+				}
+				
+				
+				// Step 2: Compute (cx′, cy′)
+				var sign = (fA == fS)? -1 : 1;
+				// Bit of a hack, as presumably rounding errors were making his negative inside the square root!
+				if((( (rx*rx*ry*ry) - (rx*rx*y1p*y1p) - (ry*ry*x1p*x1p) ) / ( (rx*rx*y1p*y1p) + (ry*ry*x1p*x1p) )) < 1e-7)
+					var co = 0;
+				else
+					var co = sign * Math.sqrt( ( (rx*rx*ry*ry) - (rx*rx*y1p*y1p) - (ry*ry*x1p*x1p) ) / ( (rx*rx*y1p*y1p) + (ry*ry*x1p*x1p) ) );
+				var V = $V( [rx*y1p/ry, -ry*x1p/rx] );
+				var Cp = V.multiply(co);
+
+				// Step 3: Compute (cx, cy) from (cx′, cy′)
+				var M = $M([
+								[ Math.cos(phi), -Math.sin(phi)],
+								[ Math.sin(phi),  Math.cos(phi)]
+							]);
+				var V = $V( [ (x1+x2)/2, (y1+y2)/2 ] );
+				var C = M.multiply(Cp).add(V);
+				//console.log(C.elements);
+				
+				Cx = C.e(1);
+				Cy = C.e(2);
+				
+				// Box for radii of the ellipse
+				var box = paper.rect(Cx,Cy-points[1][1], points[1][0],points[1][1]);
+				var adjbox = paper.rect(Cx,Cy-ry, rx,ry);
+				var centre = paper.circle(Cx, Cy, 3);
+				
+
+
+				
+				var arc = paper.path("M"+points[0][0]+","+points[0][1]+
+									 A+points[1][0]+","+points[1][1]+
+							   " 0 "+L+" "+S+" "+ex+","+ey);
+				arc.attr('stroke-width', 3);
+
+				var box = paper.rect(0,0, points[1][0],points[1][1]);
+							   
+				for(var i=0; i<points.length; i++)
+				{
+					var p = paper.circle(points[i][0], points[i][1], 5);
+					p.attr('fill', Raphael.hsl(points[i][2], 100, 50));
+					
+					p.drag(	makeOnMove(i),
+							null,
+							null);
+				}
+				
+				document.getElementById('svgcode').innerHTML = "&lt;path d='"+
+												 "M <span style='color:"+Raphael.hsl(points[0][2],100,50)+"'>"+points[0][0]+","+points[0][1]+"</span>"+
+												 " <span id='absrel'>"+A+"</span> "+
+													  "<span style='color:"+Raphael.hsl(points[1][2],100,50)+"'>"+points[1][0]+","+points[1][1]+"</span>"+
+												 " <span id=''>0</span>"+
+												 " <span id='large-arc-flag' title='Large Arc Flag'>"+L+"</span>"+
+												 " <span id='sweep-flag' title='Sweep Flag'>"+S+"</span> "+
+													  "<span style='color:"+Raphael.hsl(points[2][2],100,50)+"'>"+ex+","+ey+"</span>"
+												+"'/&gt;";
+				
+				document.getElementById('absrel').onclick = function()
+				{
+					absolute = !absolute;
+					document.getElementById(((absolute)?'absolute':'relative')+'Button').checked = true;
+					refresh();
+				}
+				document.getElementById('large-arc-flag').onclick = function()
+				{
+					largeArc = !largeArc;
+					document.getElementById('largeArcButton').checked = largeArc;
+					refresh();
+				}
+				document.getElementById('sweep-flag').onclick = function()
+				{
+					sweep = !sweep;
+					document.getElementById('sweepButton').checked = sweep;
+					refresh();
+				}
+			}
+		</script>
+</head>
+<body id="b">
+<div id='explanation'>
+    <h1>Understanding SVG Arc Paths</h1>
+    <p>SVG provides a tag that allows you to describe a line of shape by a number of co-ordinates. As well as just providing a list of all the points linked together by lines, there are sytaxes for drawing curves parametrically. One of these is the arc.</p>
+    <p>The arc has a number of parameters, including a co-ordinate pair, the size of the ellipse being described, an angle and two flags that alter the rendering. This example also allows you to modify whether the arc co-ordinates are absolute (A) or relative (a), to the starting point (defined by the red blob).</p>
+    <p>This example currently does not allow editing the angle (coming soon, hopefully!)</p>
+</div>
+<div id='knownissues'>
+    <p>Works in
+    <ul>
+        <li>Google Chrome Version 20.0.1132.47</li>
+        <li>Safari Version 5.1.7 (6534.57.2)</li>
+    </ul>
+    </p>
+    <p>Does not work in
+    <ul>
+        <li>Opera v12.00 b1467</li>
+        <li>Firefox 13.0.1</li>
+    </ul>
+    </p>
+</div>
+<pre id='svgcode'></pre>
+<p>Arc type: Absolute <input type='radio' id='absoluteButton' name='absrelButton' onclick='absolute=true;refresh();' value='absolute' checked='checked' />
+    Relative <input type='radio' id='relativeButton' name='absrelButton' onclick='absolute=false;refresh();' value='relative' />
+    Large arc flag: <input type='checkbox' id='largeArcButton' name='largeArcButton' checked='checked' onclick='largeArc=this.checked;refresh();' />
+    Sweep flag: <input type='checkbox' id='sweepButton' name='sweepButton' checked='checked' onclick='sweep=this.checked;refresh();' /></p>
+<div id='drawing'>
+</div>
+</body>
+</html>

@@ -1,14 +1,15 @@
 package edu.ist.psu.sagnik.research.svgxmlprocess.parsers.impl
 
 import edu.ist.psu.sagnik.research.svgxmlprocess.model.Rectangle
-import edu.ist.psu.sagnik.research.svgxmlprocess.parsers.model.{EllipsePath, CordPair}
+import edu.ist.psu.sagnik.research.svgxmlprocess.parsers.model.{PathCommand, EllipsePath, CordPair}
 
 /**
  * Created by sagnik on 11/26/15.
  */
-object EllipseCommand {
+case class EllipseCommand(isAbsolute:Boolean,args:Seq[EllipsePath]) extends PathCommand {
+
   def getBoundingBox(lastEndPoint:CordPair, isAbs:Boolean, ePaths:Seq[EllipsePath], bb:Rectangle):Rectangle=
-    ePaths match{
+    ePaths.toList match{
       case Nil => bb
       case ePath::Nil => getBoundingBoxOnePath(lastEndPoint,isAbs,ePath)
       case ePath::restPaths => getBoundingBox(
@@ -18,8 +19,9 @@ object EllipseCommand {
         Rectangle.rectMerge(bb,getBoundingBoxOnePath(lastEndPoint,isAbs,ePath))
       )
     }
+
   /*input is assumed to be degrees, not radians*/
-  def digitReduce(d:Double)=d-d%0.01
+  def digitReduce(d:Double)=BigDecimal(d).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
   def D2R(deg:Double)=deg*(scala.math.Pi/180)
   def R2D(deg:Double)=deg/(scala.math.Pi/180)
   def cosine(deg:Double)=digitReduce(scala.math.cos(D2R(deg)))
@@ -34,7 +36,7 @@ object EllipseCommand {
     val x1=lep.x; val y1=lep.y;
     val x2=if (isAbs) ep.endCordPair.x else lep.x+ep.endCordPair.x
     val y2=if (isAbs) ep.endCordPair.y else lep.y+ep.endCordPair.y
-    val fA=ep.largeArcFlag; val fS=ep.sweepFlag; val rX=ep.rx val rY=ep.ry
+    val fA=ep.largeArcFlag; val fS=ep.sweepFlag; val rX=ep.rx; val rY=ep.ry
     val x1_1=((x1-x2)/2)*cosine(ep.rotation)+((y1-y2)/2)*sine(ep.rotation)
     val y1_1=((y1-y2)/2)*cosine(ep.rotation)-((x1-x2)/2)*cosine(ep.rotation)
     val cx_temp_sqrt=scala.math.sqrt((rX*rX*rY*rY - rX*rX*y1_1*y1_1 - rY*rY*x1_1*x1_1)/(rX*rX*y1_1*y1_1 + rY*rY*x1_1*x1_1)) //TODO:possible exception?
@@ -42,6 +44,7 @@ object EllipseCommand {
     val cy_1= if (fA!=fS) -(cx_temp_sqrt*rY*x1_1)/rX else (cx_temp_sqrt*rY*x1_1)/rX
     val cx=digitReduce(cx_1*cosine(ep.rotation)-cy_1*sine(ep.rotation)+(x1+x2)/2)
     val cy=digitReduce(cx_1*sine(ep.rotation)+cy_1*cosine(ep.rotation)+(y1+y2)/2)
+    println(s"[x2,y2]:${x2;y2} [center]: ${cx},${cy}")
     CordPair(cx,cy)
   }
 
