@@ -32,6 +32,7 @@ class RecursiveBB [A] {
         max(List(lastEndPoint.x,path.cP1.x,path.cP2.x,path.eP.x)),
         max(List(lastEndPoint.y,path.cP1.y,path.cP2.y,path.eP.y))
       )
+
       case _ => Rectangle(0,0,0,0)
 
     }

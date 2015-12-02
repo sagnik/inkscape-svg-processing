@@ -23,4 +23,8 @@
   <path d="M130 110 C 120 140, 180 140, 170 110" stroke="magenta" fill="transparent"/>
   <rect x="120" y="110" width="60" height="30" fill="transparent" stroke="magenta" stroke-width="1"  />
 
+  <!--path d="M10 80 C 40 10, 65 10, 95 80 S 150 150, 180 80" stroke="black" fill="transparent"/-->
+
+  <path d="M10 80 Q 95 10 180 80" stroke="black" fill="transparent"/>
+
 </svg>
