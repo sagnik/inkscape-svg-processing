@@ -11,8 +11,13 @@ import scala.Error
  */
 object BoundingBoxes extends SVGPathParser{
   def main(args: Array[String]) = {
-    val command="M80 80 A 45 45, 0, 0, 0, 125 125"
-    val lastEndPoint=CordPair(80,80)
+    //val command="M80 80 A 45 45, 0, 0, 0, 125 125"
+    //val command="M230 80\n           A 45 45, 0, 1, 0, 275 125"
+    //val command="M230 230\n           A 45 45, 0, 1, 1, 275 275"
+    val command="M80 230\n           A 45 45, 0, 0, 1, 125 275"
+    //val command="M 150,150 A 76,55 30 1 1 433,278"
+
+    val lastEndPoint=CordPair(80,230)
     val paths=parse(svg_path,command) match {
       case Success(matched,_) => matched
       case Failure(msg,_) => {println(s"couldn't parse the command ${msg}"); sys.exit(1);}

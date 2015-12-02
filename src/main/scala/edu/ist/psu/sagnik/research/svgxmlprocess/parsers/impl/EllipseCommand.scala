@@ -32,36 +32,59 @@ case class EllipseCommand(isAbsolute:Boolean,args:Seq[EllipsePath]) extends Path
   * for reference
   * */
 
-  def getCenter(lep:CordPair,isAbs:Boolean,ep: EllipsePath):CordPair={
+  def getCenterandChangedRadii(lep:CordPair,isAbs:Boolean,ep: EllipsePath):(CordPair,Double,Double)={
     val x1=lep.x; val y1=lep.y;
     val x2=if (isAbs) ep.endCordPair.x else lep.x+ep.endCordPair.x
     val y2=if (isAbs) ep.endCordPair.y else lep.y+ep.endCordPair.y
-    val fA=ep.largeArcFlag; val fS=ep.sweepFlag; val rX=ep.rx; val rY=ep.ry
+    val fA=ep.largeArcFlag;
+    val fS=ep.sweepFlag;
+    var rX=scala.math.abs(ep.rx); // http://users.ecs.soton.ac.uk/rfp07r/interactive-svg-examples/arc.html, line 148
+    var rY=scala.math.abs(ep.ry);
     val x1_1=((x1-x2)/2)*cosine(ep.rotation)+((y1-y2)/2)*sine(ep.rotation)
-    val y1_1=((y1-y2)/2)*cosine(ep.rotation)-((x1-x2)/2)*cosine(ep.rotation)
-    val cx_temp_sqrt=scala.math.sqrt((rX*rX*rY*rY - rX*rX*y1_1*y1_1 - rY*rY*x1_1*x1_1)/(rX*rX*y1_1*y1_1 + rY*rY*x1_1*x1_1)) //TODO:possible exception?
-    val cx_1= if (fA!=fS) (cx_temp_sqrt*rX*y1_1)/rY else -(cx_temp_sqrt*rX*y1_1)/rY
-    val cy_1= if (fA!=fS) -(cx_temp_sqrt*rY*x1_1)/rX else (cx_temp_sqrt*rY*x1_1)/rX
+    val y1_1=((y1-y2)/2)*cosine(ep.rotation)-((x1-x2)/2)*sine(ep.rotation)
+    println(x1_1,y1_1)
+    // Ensure radii are large enough
+    // Step 1: Ensure radii are non-zero
+    // Step 2: Ensure radii are positive
+    //this part is from http://users.ecs.soton.ac.uk/rfp07r/interactive-svg-examples/arc.html
+    val lambda = ( (x1_1 * x1_1) / (rX * rX) ) + ( (y1_1 * y1_1) / (rY * rY) );
+    rX=if (lambda>1) scala.math.sqrt(lambda)*rX else rX;
+    rY=if (lambda>1) scala.math.sqrt(lambda)*rY else rY;
+
+    val cx_temp=(rX*rX*rY*rY - rX*rX*y1_1*y1_1 - rY*rY*x1_1*x1_1)/(rX*rX*y1_1*y1_1 + rY*rY*x1_1*x1_1)
+    val cx_temp_sqrt=if (cx_temp<0) 0 else scala.math.sqrt(cx_temp)
+    println(cx_temp_sqrt)
+
+    val sign= if (fA == fS) -1 else 1
+    val cx_1= sign* (cx_temp_sqrt*rX*y1_1)/rY
+    val cy_1= sign* -(cx_temp_sqrt*rY*x1_1)/rX
+
+    //println(cx_1,cy_1)
     val cx=digitReduce(cx_1*cosine(ep.rotation)-cy_1*sine(ep.rotation)+(x1+x2)/2)
     val cy=digitReduce(cx_1*sine(ep.rotation)+cy_1*cosine(ep.rotation)+(y1+y2)/2)
-    println(s"[x2,y2]:${x2;y2} [center]: ${cx},${cy}")
-    CordPair(cx,cy)
+    println(s"[x2,y2]:${x2} [center]: ${cx},${cy}")
+    (CordPair(cx,cy),rX,rY)
   }
 
   /*
   * see http://fridrich.blogspot.com/2011/06/bounding-box-of-svg-elliptical-arc.html
-  * for reference. Thre's a possible error.
+  * for reference. There's a possible error in the blog post. However, we are still not getting the "tightest"
+  * bounding box for the ellipse.
   * */
 
   def getBoundingBoxOnePath(lep:CordPair,isAbs:Boolean,ep: EllipsePath):Rectangle={
-    val center=getCenter(lep,isAbs,ep)
+    val results=getCenterandChangedRadii(lep,isAbs,ep)
+    val center=results._1
+    val rX=results._2
+    val rY=results._3
     val xOptTheta=digitReduce(R2D(scala.math.atan(-(ep.ry/ep.rx)*scala.math.tan(D2R(ep.rotation)))))
     val yOptTheta=digitReduce(R2D(scala.math.atan(ep.ry/(ep.rx*scala.math.tan(D2R(ep.rotation))))))
-    val rX=ep.rx; val rY=ep.ry
-    val x1=center.x+rX*cosine(xOptTheta)*cosine(ep.rotation) -rY*sine(xOptTheta)*sine(ep.rotation)
-    val x2=center.x+rX*cosine(xOptTheta+180)*cosine(ep.rotation) -rY*sine(xOptTheta+180)*sine(ep.rotation)
-    val y1=center.y+rX*cosine(yOptTheta)*sine(ep.rotation)+rY*sine(yOptTheta)*cosine(ep.rotation)
-    val y2=center.y+rX*cosine(yOptTheta)*sine(ep.rotation)+rY*sine(yOptTheta)*cosine(ep.rotation)
+    //println(xOptTheta+" "+yOptTheta)
+
+    val x1=digitReduce(center.x+rX*cosine(xOptTheta)*cosine(ep.rotation) -rY*sine(xOptTheta)*sine(ep.rotation))
+    val x2=digitReduce(center.x+rX*cosine(xOptTheta+180)*cosine(ep.rotation) -rY*sine(xOptTheta+180)*sine(ep.rotation))
+    val y1=digitReduce(center.y+rX*cosine(yOptTheta)*sine(ep.rotation)+rY*sine(yOptTheta)*cosine(ep.rotation))
+    val y2=digitReduce(center.y+rX*cosine(yOptTheta+180)*sine(ep.rotation)+rY*sine(yOptTheta+180)*cosine(ep.rotation))
 
     implicit def min(d1:Double,d2:Double)=scala.math.min(d1,d2).toFloat
     implicit def max(d1:Double,d2:Double)=scala.math.max(d1,d2).toFloat
