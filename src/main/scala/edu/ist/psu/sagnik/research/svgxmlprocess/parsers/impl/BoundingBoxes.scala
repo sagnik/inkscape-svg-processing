@@ -1,10 +1,8 @@
 package edu.ist.psu.sagnik.research.svgxmlprocess.parsers.impl
 
 import edu.ist.psu.sagnik.research.svgxmlprocess.model.Rectangle
-import edu.ist.psu.sagnik.research.svgxmlprocess.parsers.impl.TestSVGPathParser._
-import edu.ist.psu.sagnik.research.svgxmlprocess.parsers.model.CordPair
+import edu.ist.psu.sagnik.research.svgxmlprocess.parsers.model.{EllipseCommand, CordPair}
 
-import scala.Error
 
 /**
  * Created by szr163 on 11/30/15.

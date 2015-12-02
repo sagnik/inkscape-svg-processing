@@ -1,7 +1,6 @@
-package edu.ist.psu.sagnik.research.svgxmlprocess.parsers.impl
+package edu.ist.psu.sagnik.research.svgxmlprocess.parsers.model
 
 import edu.ist.psu.sagnik.research.svgxmlprocess.model.Rectangle
-import edu.ist.psu.sagnik.research.svgxmlprocess.parsers.model.{PathCommand, EllipsePath, CordPair}
 
 /**
  * Created by sagnik on 11/26/15.
