@@ -25,14 +25,14 @@ class RecursiveBB [A] {
 
   def getBoundingBoxOnePath(lastEndPoint:CordPair,isAbs:Boolean,path:A)=
     path match{
-      case path : EllipsePath => EllipseCommandHelper.getBoundingBoxOnePath(lastEndPoint,isAbs,path)
+      case path: EllipsePath => EllipseCommandHelper.getBoundingBoxOnePath(lastEndPoint,isAbs,path)
       case path: CurvePath => Rectangle(
         min(List(lastEndPoint.x,path.cP1.x,path.cP2.x,path.eP.x)),
         min(List(lastEndPoint.y,path.cP1.y,path.cP2.y,path.eP.y)),
         max(List(lastEndPoint.x,path.cP1.x,path.cP2.x,path.eP.x)),
         max(List(lastEndPoint.y,path.cP1.y,path.cP2.y,path.eP.y))
       )
-
+      case path:
       case _ => Rectangle(0,0,0,0)
 
     }
