@@ -1,23 +1,12 @@
 package edu.ist.psu.sagnik.research.svgxmlprocess.parsers.model
 
+/**
+ * Created by sagnik on 12/2/15.
+ */
+
 import edu.ist.psu.sagnik.research.svgxmlprocess.model.Rectangle
 
-/**
- * Created by sagnik on 11/26/15.
- */
-case class EllipseCommand(isAbsolute:Boolean,args:Seq[EllipsePath]) extends PathCommand {
-
-  def getBoundingBox(lastEndPoint:CordPair, isAbs:Boolean, ePaths:Seq[EllipsePath], bb:Rectangle):Rectangle=
-    ePaths.toList match{
-      case Nil => bb
-      case ePath::Nil => getBoundingBoxOnePath(lastEndPoint,isAbs,ePath)
-      case ePath::restPaths => getBoundingBox(
-        getEndPoint(lastEndPoint,isAbs,ePath),
-        isAbs,
-        restPaths,
-        Rectangle.rectMerge(bb,getBoundingBoxOnePath(lastEndPoint,isAbs,ePath))
-      )
-    }
+object EllipseCommandHelper {
 
   /*input is assumed to be degrees, not radians*/
   def digitReduce(d:Double)=BigDecimal(d).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble

@@ -3,6 +3,7 @@ package edu.ist.psu.sagnik.research.svgxmlprocess.parsers.impl
 import edu.ist.psu.sagnik.research.svgxmlprocess.parsers.model._
 
 import scala.util.parsing.combinator.RegexParsers
+import scala.language.implicitConversions
 /**
  * Created by sagnik on 11/12/15.
  * ? => opt
@@ -142,10 +143,10 @@ class SVGPathParser extends RegexParsers {
       case c~cw~argseq=>if ("s".equals(c)) SMC(false,argseq) else SMC(true,argseq)
     }
 
-  def curveto_argument:Parser[(CordPair,CordPair,CordPair)]=
-    coordinate_pair~opt(comma_wsp)~coordinate_pair~opt(comma_wsp)~coordinate_pair^^{case cw1~cws1~cw2~cws2~cw3 => (cw1,cw2,cw3)}
+  def curveto_argument:Parser[CurvePath]=
+    coordinate_pair~opt(comma_wsp)~coordinate_pair~opt(comma_wsp)~coordinate_pair^^{case cw1~cws1~cw2~cws2~cw3 => CurvePath(cw1,cw2,cw3)}
 
-  def curveto_argument_sequence:Parser[Seq[(CordPair,CordPair,CordPair)]]=
+  def curveto_argument_sequence:Parser[Seq[CurvePath]]=
     curveto_argument~opt(comma_wsp)~rep(curveto_argument)^^{
       case qc~cws~qcs=> if (qcs.isEmpty) List(qc).toIndexedSeq else qc+:qcs.toIndexedSeq
     } |

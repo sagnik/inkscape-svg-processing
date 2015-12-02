@@ -22,15 +22,27 @@ case class QBC(isAbsolute:Boolean,args:Seq[(CordPair,CordPair)]) extends PathCom
 
 case class SMC(isAbsolute:Boolean,args:Seq[(CordPair,CordPair)]) extends PathCommand
 
-case class Curve(isAbsolute:Boolean,args:Seq[(CordPair,CordPair,CordPair)]) extends PathCommand
-
 case class VL(isAbsolute:Boolean,args:Seq[Double]) extends PathCommand
 
 case class HL(isAbsolute:Boolean,args:Seq[Double]) extends PathCommand
 
 case class ClosePath(isAbsolute:Boolean, args:Seq[Any]) extends PathCommand{
-  def
+  def getEndpoint(startingPoint: CordPair)=startingPoint
 }
+
+case class CurvePath(cP1:CordPair,cP2:CordPair,eP:CordPair)
+
+case class Curve(isAbsolute:Boolean,args:Seq[CurvePath]) extends PathCommand{
+  def getBoundingBox(lastEndPoint:CordPair, isAbs:Boolean, paths:Seq[CurvePath],bb:Rectangle) =
+    new RecursiveBB[CurvePath].getBoundingBox(lastEndPoint,isAbs, paths,bb)
+}
+
+case class EllipseCommand(isAbsolute:Boolean,args:Seq[EllipsePath]) extends PathCommand{
+  def getBoundingBox(lastEndPoint:CordPair, isAbs:Boolean, paths:Seq[EllipsePath],bb:Rectangle) =
+    new RecursiveBB[EllipsePath].getBoundingBox(lastEndPoint,isAbs, paths,bb)
+}
+
+
 
 
 

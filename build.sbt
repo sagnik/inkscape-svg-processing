@@ -43,7 +43,7 @@ libraryDependencies += "commons-collections" % "commons-collections" % "3.2.1"
 
 javacOptions ++= Seq("-source", "1.8", "-target", "1.8")
 
-//scalacOptions += "-target:jvm-1.8"
+scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", "-Xfatal-warnings")
 
 fork := true
 

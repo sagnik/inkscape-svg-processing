@@ -1,5 +1,6 @@
 package edu.ist.psu.sagnik.research.svgxmlprocess.model
 
+import scala.language.implicitConversions
 /**
  * Created by szr163 on 11/25/15.
  */
