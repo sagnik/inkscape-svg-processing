@@ -179,11 +179,11 @@ class SVGPathParser extends RegexParsers {
       case c~cw~argseq=>if ("h".equals(c)) HL(false,argseq) else HL(true,argseq)
     }
 
-  def lineto_argument_sequence:Parser[Seq[CordPair]]=
+  def lineto_argument_sequence:Parser[Seq[LinePath]]=
     coordinate_pair~opt(comma_wsp)~rep(coordinate_pair)^^{
-      case qc~cws~qcs=> if (qcs.isEmpty) List(qc).toIndexedSeq else qc+:qcs.toIndexedSeq
+      case qc~cws~qcs=> if (qcs.isEmpty) List(LinePath(qc)).toIndexedSeq else LinePath(qc)+:qcs.map(a=>LinePath(a)).toIndexedSeq
     } |
-      coordinate_pair^^{List(_).toIndexedSeq}
+      coordinate_pair^^{a=>List(LinePath(a)).toIndexedSeq}
 
   def lineto:Parser[Line]=
     """L|l""".r~rep(wsp)~lineto_argument_sequence^^{

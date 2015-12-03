@@ -5,7 +5,8 @@ import edu.ist.psu.sagnik.research.svgxmlprocess.model.Rectangle
 /**
  * Created by szr163 on 12/1/15.
  */
-case class Line(isAbsolute:Boolean, args:Seq[CordPair]) extends PathCommand{
+//case class Line(isAbsolute:Boolean, args:Seq[CordPair]) extends PathCommand{
+class LineHelper{
   def getBoundingBox(lastEndPoint:CordPair, isAbs:Boolean, lPaths:Seq[CordPair], bb:Rectangle):Rectangle=
     lPaths.toList match{
       case Nil => bb

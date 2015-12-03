@@ -32,8 +32,24 @@ class RecursiveBB [A] {
         max(List(lastEndPoint.x,path.cP1.x,path.cP2.x,path.eP.x)),
         max(List(lastEndPoint.y,path.cP1.y,path.cP2.y,path.eP.y))
       )
-      case path:
-      case _ => Rectangle(0,0,0,0)
+      case path: QBCPath => Rectangle(
+        min(List(lastEndPoint.x,path.cP1.x,path.eP.x)),
+        min(List(lastEndPoint.y,path.cP1.y,path.eP.y)),
+        max(List(lastEndPoint.x,path.cP1.x,path.eP.x)),
+        max(List(lastEndPoint.y,path.cP1.y,path.eP.y))
+      )
+      case path: LinePath => {
+        if (isAbs)
+          Rectangle(min(lastEndPoint.x,path.eP.x),min(lastEndPoint.y,path.eP.y),
+            max(lastEndPoint.x,path.eP.x),max(lastEndPoint.y,path.eP.y))
+        else
+          Rectangle(
+            min(lastEndPoint.x,lastEndPoint.x+path.eP.x),
+            min(lastEndPoint.y,lastEndPoint.y+path.eP.y),
+            max(lastEndPoint.x,lastEndPoint.x+path.eP.x),
+            max(lastEndPoint.y,lastEndPoint.y+path.eP.y))
+      }
+      case _ => ???
 
     }
 
@@ -41,7 +57,9 @@ class RecursiveBB [A] {
    path match{
      case path: EllipsePath => EllipseCommandHelper.getEndPoint(lastEndPoint,isAbs,path.asInstanceOf[EllipsePath])
      case path: CurvePath => if (isAbs) path.eP else CordPair(lastEndPoint.x+path.eP.x,lastEndPoint.y+path.eP.y)
-     case _ => CordPair(0,0)
+     case path: QBCPath => if (isAbs) path.eP else CordPair(lastEndPoint.x+path.eP.x,lastEndPoint.y+path.eP.y)
+     case path: LinePath => if (isAbs) path.eP else CordPair(lastEndPoint.x+path.eP.x,lastEndPoint.y+path.eP.y)
+     case _ => ???
    }
 
 }
