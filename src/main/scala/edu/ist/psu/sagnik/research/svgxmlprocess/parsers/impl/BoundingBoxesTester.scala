@@ -12,7 +12,7 @@ object BoundingBoxesTester extends SVGPathParser{
     //val command="M80 80 A 45 45, 0, 0, 0, 125 125"
     //val command="M230 80\n           A 45 45, 0, 1, 0, 275 125"
     //val command="M230 230\n           A 45 45, 0, 1, 1, 275 275"
-    //val command="M80 230\n           A 45 45, 0, 0, 1, 125 275"
+    val command="M80 230\n           A 45 45, 0, 0, 1, 125 275"
     //val command="M 150,150 A 76,55 30 1 1 433,278"
 
     //move command
@@ -24,7 +24,7 @@ object BoundingBoxesTester extends SVGPathParser{
     //val command="M130 110 C 120 140, 180 140, 170 110"
 
     //QBC command
-    val command="M10 80 Q 95 10 180 80"
+    //val command="M10 80 Q 95 10 180 80"
 
     val lastEndPoint=CordPair(80,80)
     val paths=parse(svg_path,command) match {
@@ -35,8 +35,8 @@ object BoundingBoxesTester extends SVGPathParser{
     println(paths)
 
     paths(1) match{
-      case a: QBC => printBB[QBC](paths(1).asInstanceOf[QBC],lastEndPoint)
-      case a: EllipseCommand => printBB[EllipseCommand](paths(1).asInstanceOf[EllipseCommand],lastEndPoint)
+      case a: QBC => printBB[QBC](a,lastEndPoint)
+      case a: EllipseCommand => printBB[EllipseCommand](a,lastEndPoint)
       case _ => ???
     }
 
