@@ -9,7 +9,7 @@ import edu.ist.psu.sagnik.research.svgxmlprocess.parsers.model._
 object BoundingBoxesTester extends SVGPathParser{
   def main(args: Array[String]) = {
     //ellipse commands
-    val command="M80 80 A 45 45, 0, 0, 0, 125 125"
+    //val command="M80 80 A 45 45, 0, 0, 0, 125 125"
     //val command="M230 80\n           A 45 45, 0, 1, 0, 275 125"
     //val command="M230 230\n           A 45 45, 0, 1, 1, 275 275"
     //val command="M80 230\n           A 45 45, 0, 0, 1, 125 275"
@@ -24,7 +24,7 @@ object BoundingBoxesTester extends SVGPathParser{
     //val command="M130 110 C 120 140, 180 140, 170 110"
 
     //QBC command
-    //val command="M10 80 Q 95 10 180 80"
+    val command="M10 80 Q 95 10 180 80"
 
     val lastEndPoint=CordPair(80,80)
     val paths=parse(svg_path,command) match {
