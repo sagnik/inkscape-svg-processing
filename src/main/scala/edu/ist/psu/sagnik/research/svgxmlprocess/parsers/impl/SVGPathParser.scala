@@ -95,19 +95,33 @@ class SVGPathParser extends RegexParsers {
         EllipsePath(rx,ry,rot,laf,sf,cp)
     }
 
+  /*
   def elliptical_arc_argument_sequence:Parser[Seq[EllipsePath]]=
     elliptical_arc_argument~opt(comma_wsp)~rep(elliptical_arc_argument) ^^{
       case ea~cw1~eas=>if (eas.isEmpty) List(ea).toIndexedSeq else ea+:eas.toIndexedSeq
     } |
       elliptical_arc_argument^^{List(_).toIndexedSeq}
+  */
 
-  def elliptical_arc: Parser[EllipseCommand]="""A|a""".r~rep(wsp)~elliptical_arc_argument_sequence^^{
-    case c~ws~paths=> if ("a".equals("c")) EllipseCommand(false,paths) else EllipseCommand(true,paths)
-  }
+  def elliptical_arc_argument_sequence:Parser[Seq[EllipsePath]]=
+    elliptical_arc_argument~opt(comma_wsp)~elliptical_arc_argument_sequence ^^{
+      case ea~cw1~eas=>if (eas.isEmpty) List(ea).toIndexedSeq else ea+:eas.toIndexedSeq
+    } |
+      elliptical_arc_argument^^{List(_).toIndexedSeq}
 
+    def elliptical_arc: Parser[EllipseCommand]="""A|a""".r~rep(wsp)~elliptical_arc_argument_sequence^^{
+      case c~ws~paths=> if ("a".equals("c")) EllipseCommand(false,paths) else EllipseCommand(true,paths)
+    }
+  /*
   def smooth_quadratic_bezier_curveto_argument_sequence:Parser[Seq[SmQBCPath]]=
     coordinate_pair~opt(comma_wsp)~rep(coordinate_pair)^^{
       case cp~cw~cps=>if (cps.isEmpty) List(SmQBCPath(cp)).toIndexedSeq else SmQBCPath(cp)+:cps.map(a=>SmQBCPath(a)).toIndexedSeq
+    }
+  */
+
+  def smooth_quadratic_bezier_curveto_argument_sequence:Parser[Seq[SmQBCPath]]=
+    coordinate_pair~opt(comma_wsp)~smooth_quadratic_bezier_curveto_argument_sequence^^{
+      case cp~cw~cps=>if (cps.isEmpty) List(SmQBCPath(cp)).toIndexedSeq else SmQBCPath(cp)+:cps
     }
 
   def smooth_quadratic_bezier_curveto:Parser[SmQBC]=
@@ -117,9 +131,15 @@ class SVGPathParser extends RegexParsers {
 
   def quadratic_bezier_curveto_argument: Parser[QBCPath]=
     coordinate_pair~opt(comma_wsp)~coordinate_pair^^{case cp1~cws~cp2=>QBCPath(cp1,cp2)}
-
+  /*
   def quadratic_bezier_curveto_argument_sequence:Parser[Seq[QBCPath]]=
     quadratic_bezier_curveto_argument~opt(comma_wsp)~rep(quadratic_bezier_curveto_argument)^^{
+      case qc~cws~qcs=> if (qcs.isEmpty) List(qc).toIndexedSeq else qc+:qcs.toIndexedSeq
+    } |
+      quadratic_bezier_curveto_argument^^{List(_).toIndexedSeq}
+  */
+  def quadratic_bezier_curveto_argument_sequence:Parser[Seq[QBCPath]]=
+    quadratic_bezier_curveto_argument~opt(comma_wsp)~quadratic_bezier_curveto_argument_sequence^^{
       case qc~cws~qcs=> if (qcs.isEmpty) List(qc).toIndexedSeq else qc+:qcs.toIndexedSeq
     } |
       quadratic_bezier_curveto_argument^^{List(_).toIndexedSeq}
@@ -132,8 +152,16 @@ class SVGPathParser extends RegexParsers {
   def smooth_curveto_argument: Parser[SMCPath]=
     coordinate_pair~opt(comma_wsp)~coordinate_pair^^{case cp1~cws~cp2=>SMCPath(cp1,cp2)}
 
+  /*
   def smooth_curveto_argument_sequence:Parser[Seq[SMCPath]]=
     smooth_curveto_argument~opt(comma_wsp)~rep(smooth_curveto_argument)^^{
+      case qc~cws~qcs=> if (qcs.isEmpty) List(qc).toIndexedSeq else qc+:qcs.toIndexedSeq
+    } |
+      smooth_curveto_argument^^{List(_).toIndexedSeq}
+  */
+
+  def smooth_curveto_argument_sequence:Parser[Seq[SMCPath]]=
+    smooth_curveto_argument~opt(comma_wsp)~smooth_curveto_argument_sequence^^{
       case qc~cws~qcs=> if (qcs.isEmpty) List(qc).toIndexedSeq else qc+:qcs.toIndexedSeq
     } |
       smooth_curveto_argument^^{List(_).toIndexedSeq}
@@ -147,19 +175,35 @@ class SVGPathParser extends RegexParsers {
     coordinate_pair~opt(comma_wsp)~coordinate_pair~opt(comma_wsp)~coordinate_pair^^{case cw1~cws1~cw2~cws2~cw3 => CurvePath(cw1,cw2,cw3)}
 
   def curveto_argument_sequence:Parser[Seq[CurvePath]]=
-    curveto_argument~opt(comma_wsp)~rep(curveto_argument)^^{
+    curveto_argument~opt(comma_wsp)~curveto_argument_sequence^^{
       case qc~cws~qcs=> if (qcs.isEmpty) List(qc).toIndexedSeq else qc+:qcs.toIndexedSeq
     } |
       curveto_argument^^{List(_).toIndexedSeq}
+
+  /*
+  def curveto_argument_sequence:Parser[Seq[CurvePath]]=
+    curveto_argument~opt(comma_wsp)~curveto_argument_sequence^^{
+      case qc~cws~qcs=> if (qcs.isEmpty) List(qc).toIndexedSeq else qc+:qcs.toIndexedSeq
+    } |
+      curveto_argument^^{List(_).toIndexedSeq}
+  */
 
   def curveto:Parser[Curve]=
     """C|c""".r~rep(wsp)~curveto_argument_sequence^^{
       case c~cw~argseq=>if ("c".equals(c)) Curve(false,argseq) else Curve(true,argseq)
     }
 
+  /*
   def  vertical_lineto_argument_sequence:Parser[Seq[VLPath]]=
     coordinate~opt(comma_wsp)~rep(coordinate)^^{
       case c~cws~cs=> if (cs.isEmpty) List(VLPath(c)).toIndexedSeq else VLPath(c)+:cs.map(a=>VLPath(a)).toIndexedSeq
+    } |
+      coordinate^^{a=> List(VLPath(a)).toIndexedSeq}
+  */
+
+  def  vertical_lineto_argument_sequence:Parser[Seq[VLPath]]=
+    coordinate~opt(comma_wsp)~vertical_lineto_argument_sequence^^{
+      case c~cws~cs=> if (cs.isEmpty) List(VLPath(c)).toIndexedSeq else VLPath(c)+:cs
     } |
       coordinate^^{a=> List(VLPath(a)).toIndexedSeq}
 
@@ -168,9 +212,17 @@ class SVGPathParser extends RegexParsers {
       case c~cw~argseq=>if ("v".equals(c)) VL(false,argseq) else VL(true,argseq)
     }
 
+  /*
   def  horizontal_lineto_argument_sequence:Parser[Seq[HLPath]]=
     coordinate~opt(comma_wsp)~rep(coordinate)^^{
       case c~cws~cs=> if (cs.isEmpty) List(HLPath(c)).toIndexedSeq else HLPath(c)+:cs.map(a=>HLPath(a)).toIndexedSeq
+    } |
+      coordinate^^{a=>List(HLPath(a)).toIndexedSeq}
+*/
+
+  def  horizontal_lineto_argument_sequence:Parser[Seq[HLPath]]=
+    coordinate~opt(comma_wsp)~horizontal_lineto_argument_sequence^^{
+      case c~cws~cs=> if (cs.isEmpty) List(HLPath(c)).toIndexedSeq else HLPath(c)+:cs
     } |
       coordinate^^{a=>List(HLPath(a)).toIndexedSeq}
 
@@ -179,9 +231,17 @@ class SVGPathParser extends RegexParsers {
       case c~cw~argseq=>if ("h".equals(c)) HL(false,argseq) else HL(true,argseq)
     }
 
+  /*
   def lineto_argument_sequence:Parser[Seq[LinePath]]=
     coordinate_pair~opt(comma_wsp)~rep(coordinate_pair)^^{
       case qc~cws~qcs=> if (qcs.isEmpty) List(LinePath(qc)).toIndexedSeq else LinePath(qc)+:qcs.map(a=>LinePath(a)).toIndexedSeq
+    } |
+      coordinate_pair^^{a=>List(LinePath(a)).toIndexedSeq}
+  */
+
+  def lineto_argument_sequence:Parser[Seq[LinePath]]=
+    coordinate_pair~opt(comma_wsp)~lineto_argument_sequence^^{
+      case qc~cws~qcs=> if (qcs.isEmpty) List(LinePath(qc)).toIndexedSeq else LinePath(qc)+:qcs
     } |
       coordinate_pair^^{a=>List(LinePath(a)).toIndexedSeq}
 
@@ -192,9 +252,17 @@ class SVGPathParser extends RegexParsers {
 
   def closepath:Parser[ClosePath]="""Z|z""".r^^{case _ => ClosePath(true,Seq.empty[Any])}
 
+  /*
   def moveto_argument_sequence:Parser[Seq[CordPair]]=
     coordinate_pair~opt(comma_wsp)~rep(coordinate_pair)^^{
       case qc~cws~qcs=> if (qcs.isEmpty) List(qc).toIndexedSeq else qc+:qcs.toIndexedSeq
+    } |
+      coordinate_pair^^{List(_).toIndexedSeq}
+  */
+
+  def moveto_argument_sequence:Parser[Seq[CordPair]]=
+    coordinate_pair~opt(comma_wsp)~moveto_argument_sequence^^{
+      case qc~cws~qcs=> if (qcs.isEmpty) List(qc).toIndexedSeq else qc+:qcs
     } |
       coordinate_pair^^{List(_).toIndexedSeq}
 
@@ -215,15 +283,16 @@ class SVGPathParser extends RegexParsers {
       elliptical_arc^^{a=>a}
 
   def drawto_commands:Parser[Seq[PathCommand]]=
-   drawto_command~rep(wsp)~rep(drawto_command)^^{
-     case dc~ws~dcs => if (dcs.isEmpty) List(dc).toIndexedSeq else dc+:dcs
-   } | drawto_command^^{List(_).toIndexedSeq}
+    drawto_command~rep(wsp)~rep(drawto_command)^^{
+      case dc~ws~dcs => if (dcs.isEmpty) List(dc).toIndexedSeq else dc+:dcs
+    } | drawto_command^^{List(_).toIndexedSeq}
 
   def moveto_drawto_command_group:Parser[Seq[PathCommand]]=
     moveto~rep(wsp)~opt(drawto_commands)^^{
       case mt~ws~Some(dt)=>mt+:dt
       case mt~ws~None => List(mt).toIndexedSeq
     }
+
 
   def moveto_drawto_command_groups:Parser[Seq[PathCommand]]=
     moveto_drawto_command_group~rep(wsp)~rep(moveto_drawto_command_group)^^{
@@ -241,11 +310,13 @@ class SVGPathParser extends RegexParsers {
 
 object TestSVGPathParser extends SVGPathParser{
   def main(args: Array[String]) = {
-     //   parse(number_sequence, "1") match {
-     //  parse(wsp, " ") match {
+    val c="m 3964.54,3342.8 251.35,0 m -251.35,17.43 0,-34.86 m 251.35,34.86 0,-34.86 m -1742.01,88.84 264.28,637.09 528.57,5.62 528.56,-301.39 264.28,-66.92 m -1585.69,-324.44 0,99.52 m -17.43,-99.52 34.86,0 m -34.86,99.52 34.86,0 m 246.85,498.2 0,178.25 m -17.43,-178.25 34.86,0 m -34.86,178.25 34.86,0 m 511.14,-149.57 0,132.7 m -17.43,-132.7 34.86,0 m -34.86,132.7 34.86,0 m 511.13,-414.41 0,93.9 m -17.43,-93.9 34.86,0 m -34.86,93.9 34.86,0 m 246.85,-144.51 0,60.17 m -17.43,-60.17 34.86,0 m -34.86,60.17 34.86,0"
+    //val c="m 3964.54,3342.8 l -1742.01,88.84 264.28,637.09 528.57,5.62 528.56,-301.39 264.28,-66.92"
+    //val c="M10 10 C 20 20, 40 20, 50 10 70 20, 120 20, 120 10 120 20, 180 20, 170 10"
+    //parse(digit_sequence, "12345") match {
+    //  parse(wsp, " ") match {
     //    parse(coordinate_pair, "12    20") match {
-    val inkscapePathCommand="m 3964.54,3342.8 251.35,0 m -251.35,17.43 0,-34.86 m 251.35,34.86 0,-34.86 m -1742.01,88.84 264.28,637.09 528.57,5.62 528.56,-301.39 264.28,-66.92 m -1585.69,-324.44 0,99.52 m -17.43,-99.52 34.86,0 m -34.86,99.52 34.86,0 m 246.85,498.2 0,178.25 m -17.43,-178.25 34.86,0 m -34.86,178.25 34.86,0 m 511.14,-149.57 0,132.7 m -17.43,-132.7 34.86,0 m -34.86,132.7 34.86,0 m 511.13,-414.41 0,93.9 m -17.43,-93.9 34.86,0 m -34.86,93.9 34.86,0 m 246.85,-144.51 0,60.17 m -17.43,-60.17 34.86,0 m -34.86,60.17 34.86,0"
-    parse(svg_path, inkscapePathCommand) match {
+    parse(svg_path, c) match {
       case Success(matched,_) => println(s"[matched]: ${matched}")
       case Failure(msg,_) => println("FAILURE: " + msg)
       case Error(msg,_) => println("ERROR: " + msg)
