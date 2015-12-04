@@ -40,10 +40,15 @@ case class SMC(isAbsolute:Boolean,args:Seq[SMCPath]) extends PathCommand{
 
 case class VLPath(eP:Double)
 case class VL(isAbsolute:Boolean,args:Seq[VLPath]) extends PathCommand{
+  override def getBoundingBox[SMCPath](lastEndPoint:CordPair, isAbs:Boolean, paths:Seq[SMCPath],bb:Rectangle) =
+    new RecursiveBB[SMCPath].getBoundingBox(lastEndPoint,isAbs, paths,bb)
 }
 
 case class HLPath(eP:Double)
-case class HL(isAbsolute:Boolean,args:Seq[HLPath]) extends PathCommand
+case class HL(isAbsolute:Boolean,args:Seq[HLPath]) extends PathCommand{
+  override def getBoundingBox[SMCPath](lastEndPoint:CordPair, isAbs:Boolean, paths:Seq[SMCPath],bb:Rectangle) =
+    new RecursiveBB[SMCPath].getBoundingBox(lastEndPoint,isAbs, paths,bb)
+}
 
 case class ClosePath(isAbsolute:Boolean, args:Seq[Any]) extends PathCommand{
   def getEndpoint(startingPoint: CordPair)=startingPoint

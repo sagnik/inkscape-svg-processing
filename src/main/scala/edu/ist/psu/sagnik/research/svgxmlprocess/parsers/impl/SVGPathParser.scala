@@ -222,6 +222,7 @@ class SVGPathParser extends RegexParsers {
   def moveto_drawto_command_group:Parser[Seq[PathCommand]]=
     moveto~rep(wsp)~opt(drawto_commands)^^{
       case mt~ws~Some(dt)=>mt+:dt
+      case mt~ws~None => List(mt).toIndexedSeq
     }
 
   def moveto_drawto_command_groups:Parser[Seq[PathCommand]]=
@@ -243,7 +244,8 @@ object TestSVGPathParser extends SVGPathParser{
      //   parse(number_sequence, "1") match {
      //  parse(wsp, " ") match {
     //    parse(coordinate_pair, "12    20") match {
-    parse(svg_path, "M80 230\n           A 45 45, 0, 0, 1, 125 275") match {
+    val inkscapePathCommand="m 3964.54,3342.8 251.35,0 m -251.35,17.43 0,-34.86 m 251.35,34.86 0,-34.86 m -1742.01,88.84 264.28,637.09 528.57,5.62 528.56,-301.39 264.28,-66.92 m -1585.69,-324.44 0,99.52 m -17.43,-99.52 34.86,0 m -34.86,99.52 34.86,0 m 246.85,498.2 0,178.25 m -17.43,-178.25 34.86,0 m -34.86,178.25 34.86,0 m 511.14,-149.57 0,132.7 m -17.43,-132.7 34.86,0 m -34.86,132.7 34.86,0 m 511.13,-414.41 0,93.9 m -17.43,-93.9 34.86,0 m -34.86,93.9 34.86,0 m 246.85,-144.51 0,60.17 m -17.43,-60.17 34.86,0 m -34.86,60.17 34.86,0"
+    parse(svg_path, inkscapePathCommand) match {
       case Success(matched,_) => println(s"[matched]: ${matched}")
       case Failure(msg,_) => println("FAILURE: " + msg)
       case Error(msg,_) => println("ERROR: " + msg)

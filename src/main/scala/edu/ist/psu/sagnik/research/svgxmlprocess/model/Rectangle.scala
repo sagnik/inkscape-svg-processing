@@ -52,7 +52,12 @@ object Rectangle {
 
 
   def rectMerge(r1:Rectangle,r2:Rectangle):Rectangle=
-    Rectangle(min(r1.x1,r2.x1),min(r1.y1,r2.y1),max(r1.x2,r2.x2),max(r1.y2,r2.y2))
+    if (Rectangle(0f,0f,0f,0f).equals(r1))
+      r2
+    else if (Rectangle(0f,0f,0f,0f).equals(r1))
+      r1
+    else
+      Rectangle(min(r1.x1,r2.x1),min(r1.y1,r2.y1),max(r1.x2,r2.x2),max(r1.y2,r2.y2))
 
   def rectMerge(rs:Seq[Rectangle]):Option[Rectangle]=
     if (rs.isEmpty) None

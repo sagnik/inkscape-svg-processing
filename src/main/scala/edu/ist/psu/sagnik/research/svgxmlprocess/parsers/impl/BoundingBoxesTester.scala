@@ -9,10 +9,10 @@ import edu.ist.psu.sagnik.research.svgxmlprocess.parsers.model._
 object BoundingBoxesTester extends SVGPathParser{
   def main(args: Array[String]) = {
     //ellipse commands
-    //val command="M80 80 A 45 45, 0, 0, 0, 125 125"
+    val command="M80 80 A 45 45, 0, 0, 0, 125 125"
     //val command="M230 80\n           A 45 45, 0, 1, 0, 275 125"
     //val command="M230 230\n           A 45 45, 0, 1, 1, 275 275"
-    val command="M80 230\n           A 45 45, 0, 0, 1, 125 275"
+    //val command="M80 230\n           A 45 45, 0, 0, 1, 125 275"
     //val command="M 150,150 A 76,55 30 1 1 433,278"
 
     //move command
@@ -26,6 +26,9 @@ object BoundingBoxesTester extends SVGPathParser{
     //QBC command
     //val command="M10 80 Q 95 10 180 80"
 
+    //line command
+    //val command="M10 80 L 95 10 180 80"
+
     val lastEndPoint=CordPair(80,80)
     val paths=parse(svg_path,command) match {
       case Success(matched,_) => matched
@@ -37,6 +40,11 @@ object BoundingBoxesTester extends SVGPathParser{
     paths(1) match{
       case a: QBC => printBB[QBC](a,lastEndPoint)
       case a: EllipseCommand => printBB[EllipseCommand](a,lastEndPoint)
+      case a: Line => printBB[Line](a,lastEndPoint)
+      case a: HL => printBB[HL](a,lastEndPoint)
+      case a: VL => printBB[VL](a,lastEndPoint)
+      case a: SMC => ???
+      case a: SmQBC => ???
       case _ => ???
     }
 
@@ -49,6 +57,16 @@ object BoundingBoxesTester extends SVGPathParser{
           p.getBoundingBox[QBCPath](lep, p.isAbsolute, p.args,Rectangle (0, 0, 0, 0)))
         case p: EllipseCommand => println("[Ellipse BB]: "+
           p.getBoundingBox[EllipsePath](lep, p.isAbsolute, p.args,Rectangle (0, 0, 0, 0)))
+        case p: Line => println("[Line BB]: "+
+          p.getBoundingBox[LinePath](lep, p.isAbsolute, p.args,Rectangle (0, 0, 0, 0)))
+        case p: HL => println("[Horizontal Line BB]: "+
+          p.getBoundingBox[HLPath](lep, p.isAbsolute, p.args,Rectangle (0, 0, 0, 0)))
+        case p: VL => println("[Vertical Line BB]: "+
+          p.getBoundingBox[VLPath](lep, p.isAbsolute, p.args,Rectangle (0, 0, 0, 0)))
+        case p: SMC => println("[Smooth Curve BB]: "+
+          p.getBoundingBox[SMCPath](lep, p.isAbsolute, p.args,Rectangle (0, 0, 0, 0)))
+        case p: SmQBC => println("[Smooth Quadretic Curve BB]: "+
+          p.getBoundingBox[SmQBCPath](lep, p.isAbsolute, p.args,Rectangle (0, 0, 0, 0)))
         case _ => ???
       }
 

@@ -7,16 +7,17 @@ import scala.language.implicitConversions
  */
 class RecursiveBB [A] {
   def getBoundingBox(lastEndPoint:CordPair, isAbs:Boolean, paths:Seq[A],bb:Rectangle):Rectangle=
-    paths.toList match{
+    paths.toList match {
       case Nil => bb
-      case path::Nil => getBoundingBoxOnePath(lastEndPoint,isAbs,path)
-      case path::restPaths => getBoundingBox(
-        getEndPoint(lastEndPoint,isAbs,path),
+      case path :: Nil => Rectangle.rectMerge(bb, getBoundingBoxOnePath(lastEndPoint, isAbs, path))
+      case path :: restPaths => getBoundingBox(
+        getEndPoint(lastEndPoint, isAbs, path),
         isAbs,
         restPaths,
-        Rectangle.rectMerge(bb,getBoundingBoxOnePath(lastEndPoint,isAbs,path))
+        Rectangle.rectMerge(bb, getBoundingBoxOnePath(lastEndPoint, isAbs, path))
       )
-    }
+
+  }
 
   implicit def min(d1:Double,d2:Double)=scala.math.min(d1,d2).toFloat
   implicit def max(d1:Double,d2:Double)=scala.math.max(d1,d2).toFloat
@@ -49,6 +50,20 @@ class RecursiveBB [A] {
             max(lastEndPoint.x,lastEndPoint.x+path.eP.x),
             max(lastEndPoint.y,lastEndPoint.y+path.eP.y))
       }
+      //2 is arbitrary, just creating a box
+      case path: HLPath =>{
+        if (isAbs)
+          Rectangle(min(lastEndPoint.x,path.eP),(lastEndPoint.y-2).toFloat,max(lastEndPoint.x,path.eP),(lastEndPoint.y+2).toFloat)
+        else
+          Rectangle(min(lastEndPoint.x,lastEndPoint.x+path.eP),(lastEndPoint.y-2).toFloat,max(lastEndPoint.x,lastEndPoint.x+path.eP),(lastEndPoint.y+2).toFloat)
+      }
+      case path: VLPath =>{
+        if (isAbs)
+          Rectangle((lastEndPoint.x-2).toFloat,min(lastEndPoint.y,path.eP),(lastEndPoint.x+2).toFloat,max(lastEndPoint.y,path.eP))
+        else
+          Rectangle((lastEndPoint.x-2).toFloat,min(lastEndPoint.y,lastEndPoint.y+path.eP),(lastEndPoint.x+2).toFloat,max(lastEndPoint.y,lastEndPoint.y+path.eP))
+      }
+
       case _ => ???
 
     }
@@ -59,6 +74,8 @@ class RecursiveBB [A] {
      case path: CurvePath => if (isAbs) path.eP else CordPair(lastEndPoint.x+path.eP.x,lastEndPoint.y+path.eP.y)
      case path: QBCPath => if (isAbs) path.eP else CordPair(lastEndPoint.x+path.eP.x,lastEndPoint.y+path.eP.y)
      case path: LinePath => if (isAbs) path.eP else CordPair(lastEndPoint.x+path.eP.x,lastEndPoint.y+path.eP.y)
+     case path: HLPath => if (isAbs) CordPair(path.eP,lastEndPoint.y) else CordPair(lastEndPoint.x+path.eP,lastEndPoint.y)
+     case path: VLPath => if (isAbs) CordPair(lastEndPoint.x,path.eP) else CordPair(lastEndPoint.x,lastEndPoint.y+path.eP)
      case _ => ???
    }
 
