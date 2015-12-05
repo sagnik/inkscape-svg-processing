@@ -8,7 +8,7 @@ import edu.ist.psu.sagnik.research.svgxmlprocess.model.Rectangle
 
 trait PathCommand{
   def isAbsolute:Boolean
-  def args:Any
+  def args:Seq[Any]
   def getBoundingBox[A](lastEndPoint:CordPair, isAbs:Boolean, paths:Seq[A],bb:Rectangle)=Rectangle(0f,0f,0f,0f)
 }
 
@@ -61,11 +61,11 @@ case class Curve(isAbsolute:Boolean,args:Seq[CurvePath]) extends PathCommand{
 }
 
 case class LinePath(eP:CordPair)
-case class Line(isAbsolute:Boolean, args:Seq[LinePath]) extends PathCommand{
-  override def getBoundingBox[LinePath](lastEndPoint:CordPair, isAbs:Boolean, paths:Seq[LinePath],bb:Rectangle) =
-    new RecursiveBB[LinePath].getBoundingBox(lastEndPoint,isAbs, paths,bb)
-
+case class Line(isAbsolute:Boolean, args:Seq[LinePath]) extends PathCommand {
+  override def getBoundingBox[LinePath](lastEndPoint: CordPair, isAbs: Boolean, paths: Seq[LinePath], bb: Rectangle) =
+    new RecursiveBB[LinePath].getBoundingBox(lastEndPoint, isAbs, paths, bb)
 }
+
 
 
 
