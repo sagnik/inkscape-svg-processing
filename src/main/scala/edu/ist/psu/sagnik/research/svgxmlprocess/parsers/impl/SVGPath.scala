@@ -40,9 +40,42 @@ object SVGPath extends SVGPathParser{
       List(Move(x.isAbsolute,List(moveArg)),Line(x.isAbsolute,lineCargs.map(b=>LinePath(b))))
     }
 
-  def getPathBB(pathElems:Seq[PathCommand])={
-    
+  def getPathBB(pathElems:Seq[PathCommand],bb:Rectangle,lep:CordPair):Rectangle=
+    pathElems match{
+      case Nil => bb
+      case pathElem::Nil => Rectangle.rectMerge(bb,getPathElementBB(pathElem,lep))
+      case pathElem::rest=>{
+        val lastEndPoint=getLastEndPoint(pathElem,lep)
+        getPathBB(rest,bb,lastEndPoint)
+      }
+    }
+
+  def getPathElementBB(p:PathCommand,lep:CordPair):Rectangle=
+    p match{
+      case p:QBC => getBB[QBC](p.asInstanceOf[QBC],lep)
+      case p:EllipseCommand => getBB[EllipseCommand](p.asInstanceOf[EllipseCommand],lep)
+      case p: Line => getBB[Line(p.asInstanceOf[Line],lep)
+      case p: HL => getBB[HL](p.asInstanceOf[HL],lep)
+      case p: VL => getBB[VL](p.asInstanceOf[VL],lep)
+      case p: SMC => getBB[SMC](p.asInstanceOf[SMC],lep)
+      case p:SmQBC => getBB[SmQBC](p.asInstanceOf[SmQBC],lep)
+      case _ => ???
+
+    }
+  def getLastEndPoint(p:PathCommand,lep:CordPair):CordPair={
+    p match{
+      case p:QBC => new RecursiveBB[QBC].getEndPoint(lep,p.isAbsolute,p.asInstanceOf[QBC])
+      case p:EllipseCommand => new RecursiveBB[EllipseCommand].getEndPoint(lep,p.isAbsolute,p.asInstanceOf[EllipseCommand])
+      case p: Line => new RecursiveBB[Line].getEndPoint(lep,p.isAbsolute,p.asInstanceOf[Line])
+      case p: HL => new RecursiveBB[HL].getEndPoint(lep,p.isAbsolute,p.asInstanceOf[HL])
+      case p: VL => new RecursiveBB[VL].getEndPoint(lep,p.isAbsolute,p.asInstanceOf[VL])
+      case p: SMC => new RecursiveBB[SMC].getEndPoint(lep,p.isAbsolute,p.asInstanceOf[SMC])
+      case p:SmQBC => new RecursiveBB[SmQBC].getEndPoint(lep,p.isAbsolute,p.asInstanceOf[SmQBC])
+      case _ => ???
+    }
   }
+
+
   def getBB[A<: PathCommand](p:A,lep:CordPair):Rectangle=
     p match {
       case p: QBC => p.getBoundingBox[QBCPath](lep, p.isAbsolute, p.args,Rectangle (0, 0, 0, 0))
