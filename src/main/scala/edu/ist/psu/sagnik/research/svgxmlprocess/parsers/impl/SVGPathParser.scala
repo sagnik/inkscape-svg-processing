@@ -250,7 +250,7 @@ class SVGPathParser extends RegexParsers {
       case c~cw~argseq=>if ("l".equals(c)) Line(false,argseq) else Line(true,argseq)
     }
 
-  def closepath:Parser[ClosePath]="""Z|z""".r^^{case _ => ClosePath(true,Seq.empty[Any])}
+  def closepath:Parser[Close]="""Z|z""".r^^{case _ => Close(true,Seq.empty[Any])}
 
   /*
   def moveto_argument_sequence:Parser[Seq[CordPair]]=
@@ -260,11 +260,11 @@ class SVGPathParser extends RegexParsers {
       coordinate_pair^^{List(_).toIndexedSeq}
   */
 
-  def moveto_argument_sequence:Parser[Seq[CordPair]]=
+  def moveto_argument_sequence:Parser[Seq[MovePath]]=
     coordinate_pair~opt(comma_wsp)~moveto_argument_sequence^^{
-      case qc~cws~qcs=> if (qcs.isEmpty) List(qc).toIndexedSeq else qc+:qcs
+      case qc~cws~qcs=> if (qcs.isEmpty) List(MovePath(qc)).toIndexedSeq else MovePath(qc)+:qcs
     } |
-      coordinate_pair^^{List(_).toIndexedSeq}
+      coordinate_pair^^{a=>List(MovePath(a)).toIndexedSeq}
 
   def moveto:Parser[Move]=
     """M|m""".r~rep(wsp)~moveto_argument_sequence^^{

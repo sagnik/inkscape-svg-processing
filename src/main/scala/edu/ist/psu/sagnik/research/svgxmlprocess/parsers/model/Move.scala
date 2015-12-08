@@ -5,7 +5,7 @@ import edu.ist.psu.sagnik.research.svgxmlprocess.model.Rectangle
 /**
  * Created by szr163 on 12/1/15.
  */
-case class Move(isAbsolute:Boolean, args:Seq[CordPair]) extends PathCommand{
+class MoveHelper(isAbsolute:Boolean, args:Seq[CordPair]){
 
   def getEndPoint(lastEndPoint:CordPair, isAbs:Boolean, mPaths:Seq[CordPair], ep:CordPair):CordPair=
     mPaths.toList match{
