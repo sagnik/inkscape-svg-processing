@@ -25,6 +25,7 @@ class RecursiveEP[A] {
       case path: LinePath => if (isAbs) path.eP else CordPair(lastEndPoint.x+path.eP.x,lastEndPoint.y+path.eP.y)
       case path: HLPath => if (isAbs) CordPair(path.eP,lastEndPoint.y) else CordPair(lastEndPoint.x+path.eP,lastEndPoint.y)
       case path: VLPath => if (isAbs) CordPair(lastEndPoint.x,path.eP) else CordPair(lastEndPoint.x,lastEndPoint.y+path.eP)
+      case path: MovePath => if (isAbs) path.eP else CordPair(lastEndPoint.x+path.eP.x,lastEndPoint.y+path.eP.y)
       case _ => ???
     }
 }

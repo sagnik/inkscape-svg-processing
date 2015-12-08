@@ -11,7 +11,7 @@ class RecursiveBB [A] {
       case Nil => bb
       case path :: Nil => Rectangle.rectMerge(bb, getBoundingBoxOnePath(lastEndPoint, isAbs, path))
       case path :: restPaths => getBoundingBox(
-        getEndPoint(lastEndPoint, isAbs, path),
+        new RecursiveEP[A].getEndPointOnePath(lastEndPoint, isAbs, path),
         isAbs,
         restPaths,
         Rectangle.rectMerge(bb, getBoundingBoxOnePath(lastEndPoint, isAbs, path))
@@ -26,6 +26,16 @@ class RecursiveBB [A] {
 
   def getBoundingBoxOnePath(lastEndPoint:CordPair,isAbs:Boolean,path:A)=
     path match{
+      case path:MovePath => if (isAbs)
+        Rectangle(min(lastEndPoint.x,path.eP.x),min(lastEndPoint.y,path.eP.y),
+          max(lastEndPoint.x,path.eP.x),max(lastEndPoint.y,path.eP.y))
+      else
+        Rectangle(
+          min(lastEndPoint.x,lastEndPoint.x+path.eP.x),
+          min(lastEndPoint.y,lastEndPoint.y+path.eP.y),
+          max(lastEndPoint.x,lastEndPoint.x+path.eP.x),
+          max(lastEndPoint.y,lastEndPoint.y+path.eP.y))
+
       case path: EllipsePath => EllipseCommandHelper.getBoundingBoxOnePath(lastEndPoint,isAbs,path)
       case path: CurvePath => Rectangle(
         min(List(lastEndPoint.x,path.cP1.x,path.cP2.x,path.eP.x)),
@@ -67,16 +77,5 @@ class RecursiveBB [A] {
       case _ => ???
 
     }
-
-  def getEndPoint(lastEndPoint:CordPair,isAbs:Boolean,path:A)=
-   path match{
-     case path: EllipsePath => EllipseCommandHelper.getEndPoint(lastEndPoint,isAbs,path.asInstanceOf[EllipsePath])
-     case path: CurvePath => if (isAbs) path.eP else CordPair(lastEndPoint.x+path.eP.x,lastEndPoint.y+path.eP.y)
-     case path: QBCPath => if (isAbs) path.eP else CordPair(lastEndPoint.x+path.eP.x,lastEndPoint.y+path.eP.y)
-     case path: LinePath => if (isAbs) path.eP else CordPair(lastEndPoint.x+path.eP.x,lastEndPoint.y+path.eP.y)
-     case path: HLPath => if (isAbs) CordPair(path.eP,lastEndPoint.y) else CordPair(lastEndPoint.x+path.eP,lastEndPoint.y)
-     case path: VLPath => if (isAbs) CordPair(lastEndPoint.x,path.eP) else CordPair(lastEndPoint.x,lastEndPoint.y+path.eP)
-     case _ => ???
-   }
 
 }
