@@ -95,14 +95,6 @@ class SVGPathParser extends RegexParsers {
         EllipsePath(rx,ry,rot,laf,sf,cp)
     }
 
-  /*
-  def elliptical_arc_argument_sequence:Parser[Seq[EllipsePath]]=
-    elliptical_arc_argument~opt(comma_wsp)~rep(elliptical_arc_argument) ^^{
-      case ea~cw1~eas=>if (eas.isEmpty) List(ea) else ea+:eas
-    } |
-      elliptical_arc_argument^^{List(_)}
-  */
-
   def elliptical_arc_argument_sequence:Parser[Seq[EllipsePath]]=
     elliptical_arc_argument~opt(comma_wsp)~elliptical_arc_argument_sequence ^^{
       case ea~cw1~eas=>if (eas.isEmpty) List(ea) else ea+:eas
@@ -112,12 +104,6 @@ class SVGPathParser extends RegexParsers {
     def elliptical_arc: Parser[EllipseCommand]="""A|a""".r~rep(wsp)~elliptical_arc_argument_sequence^^{
       case c~ws~paths=> if ("a".equals("c")) EllipseCommand(false,paths) else EllipseCommand(true,paths)
     }
-  /*
-  def smooth_quadratic_bezier_curveto_argument_sequence:Parser[Seq[SmQBCPath]]=
-    coordinate_pair~opt(comma_wsp)~rep(coordinate_pair)^^{
-      case cp~cw~cps=>if (cps.isEmpty) List(SmQBCPath(cp)) else SmQBCPath(cp)+:cps.map(a=>SmQBCPath(a))
-    }
-  */
 
   def smooth_quadratic_bezier_curveto_argument_sequence:Parser[Seq[SmQBCPath]]=
     coordinate_pair~opt(comma_wsp)~smooth_quadratic_bezier_curveto_argument_sequence^^{
@@ -131,13 +117,7 @@ class SVGPathParser extends RegexParsers {
 
   def quadratic_bezier_curveto_argument: Parser[QBCPath]=
     coordinate_pair~opt(comma_wsp)~coordinate_pair^^{case cp1~cws~cp2=>QBCPath(cp1,cp2)}
-  /*
-  def quadratic_bezier_curveto_argument_sequence:Parser[Seq[QBCPath]]=
-    quadratic_bezier_curveto_argument~opt(comma_wsp)~rep(quadratic_bezier_curveto_argument)^^{
-      case qc~cws~qcs=> if (qcs.isEmpty) List(qc) else qc+:qcs
-    } |
-      quadratic_bezier_curveto_argument^^{List(_)}
-  */
+
   def quadratic_bezier_curveto_argument_sequence:Parser[Seq[QBCPath]]=
     quadratic_bezier_curveto_argument~opt(comma_wsp)~quadratic_bezier_curveto_argument_sequence^^{
       case qc~cws~qcs=> if (qcs.isEmpty) List(qc) else qc+:qcs
@@ -151,14 +131,6 @@ class SVGPathParser extends RegexParsers {
 
   def smooth_curveto_argument: Parser[SMCPath]=
     coordinate_pair~opt(comma_wsp)~coordinate_pair^^{case cp1~cws~cp2=>SMCPath(cp1,cp2)}
-
-  /*
-  def smooth_curveto_argument_sequence:Parser[Seq[SMCPath]]=
-    smooth_curveto_argument~opt(comma_wsp)~rep(smooth_curveto_argument)^^{
-      case qc~cws~qcs=> if (qcs.isEmpty) List(qc) else qc+:qcs
-    } |
-      smooth_curveto_argument^^{List(_)}
-  */
 
   def smooth_curveto_argument_sequence:Parser[Seq[SMCPath]]=
     smooth_curveto_argument~opt(comma_wsp)~smooth_curveto_argument_sequence^^{
@@ -180,26 +152,11 @@ class SVGPathParser extends RegexParsers {
     } |
       curveto_argument^^{List(_)}
 
-  /*
-  def curveto_argument_sequence:Parser[Seq[CurvePath]]=
-    curveto_argument~opt(comma_wsp)~curveto_argument_sequence^^{
-      case qc~cws~qcs=> if (qcs.isEmpty) List(qc) else qc+:qcs
-    } |
-      curveto_argument^^{List(_)}
-  */
 
   def curveto:Parser[Curve]=
     """C|c""".r~rep(wsp)~curveto_argument_sequence^^{
       case c~cw~argseq=>if ("c".equals(c)) Curve(false,argseq) else Curve(true,argseq)
     }
-
-  /*
-  def  vertical_lineto_argument_sequence:Parser[Seq[VLPath]]=
-    coordinate~opt(comma_wsp)~rep(coordinate)^^{
-      case c~cws~cs=> if (cs.isEmpty) List(VLPath(c)) else VLPath(c)+:cs.map(a=>VLPath(a))
-    } |
-      coordinate^^{a=> List(VLPath(a))}
-  */
 
   def  vertical_lineto_argument_sequence:Parser[Seq[VLPath]]=
     coordinate~opt(comma_wsp)~vertical_lineto_argument_sequence^^{
@@ -212,14 +169,6 @@ class SVGPathParser extends RegexParsers {
       case c~cw~argseq=>if ("v".equals(c)) VL(false,argseq) else VL(true,argseq)
     }
 
-  /*
-  def  horizontal_lineto_argument_sequence:Parser[Seq[HLPath]]=
-    coordinate~opt(comma_wsp)~rep(coordinate)^^{
-      case c~cws~cs=> if (cs.isEmpty) List(HLPath(c)) else HLPath(c)+:cs.map(a=>HLPath(a))
-    } |
-      coordinate^^{a=>List(HLPath(a))}
-*/
-
   def  horizontal_lineto_argument_sequence:Parser[Seq[HLPath]]=
     coordinate~opt(comma_wsp)~horizontal_lineto_argument_sequence^^{
       case c~cws~cs=> if (cs.isEmpty) List(HLPath(c)) else HLPath(c)+:cs
@@ -230,14 +179,6 @@ class SVGPathParser extends RegexParsers {
     """H|h""".r~rep(wsp)~horizontal_lineto_argument_sequence^^{
       case c~cw~argseq=>if ("h".equals(c)) HL(false,argseq) else HL(true,argseq)
     }
-
-  /*
-  def lineto_argument_sequence:Parser[Seq[LinePath]]=
-    coordinate_pair~opt(comma_wsp)~rep(coordinate_pair)^^{
-      case qc~cws~qcs=> if (qcs.isEmpty) List(LinePath(qc)) else LinePath(qc)+:qcs.map(a=>LinePath(a))
-    } |
-      coordinate_pair^^{a=>List(LinePath(a))}
-  */
 
   def lineto_argument_sequence:Parser[Seq[LinePath]]=
     coordinate_pair~opt(comma_wsp)~lineto_argument_sequence^^{
@@ -251,14 +192,6 @@ class SVGPathParser extends RegexParsers {
     }
 
   def closepath:Parser[Close]="""Z|z""".r^^{case _ => Close(true,Seq.empty[Any])}
-
-  /*
-  def moveto_argument_sequence:Parser[Seq[CordPair]]=
-    coordinate_pair~opt(comma_wsp)~rep(coordinate_pair)^^{
-      case qc~cws~qcs=> if (qcs.isEmpty) List(qc) else qc+:qcs
-    } |
-      coordinate_pair^^{List(_)}
-  */
 
   def moveto_argument_sequence:Parser[Seq[MovePath]]=
     coordinate_pair~opt(comma_wsp)~moveto_argument_sequence^^{

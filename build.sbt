@@ -11,7 +11,7 @@ javacOptions += "-Xlint:unchecked"
 scalaVersion := "2.11.7"
 
 crossScalaVersions := Seq("2.11.7", "2.10.5")
-  
+
 
 resolvers ++= Seq(
   "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/",
@@ -21,7 +21,7 @@ resolvers ++= Seq(
 
 
 libraryDependencies ++= Seq(
-   //jackson for json
+  //jackson for json
   "org.json4s" %% "json4s-native" % "3.2.11",
   "org.json4s" %% "json4s-jackson" % "3.2.10",
   // pdf parsing libraries
@@ -35,11 +35,15 @@ libraryDependencies ++= Seq(
     ExclusionRule(organization = "com.sun.jmx"),
     ExclusionRule(organization = "javax.jms")
     )
-  )
+)
 
 libraryDependencies += "javax.media" % "jai_core" % "1.1.3"
 
 libraryDependencies += "commons-collections" % "commons-collections" % "3.2.1"
+
+libraryDependencies += "org.scalanlp" %% "breeze" % "0.11.2"
+
+libraryDependencies += "org.scalanlp" %% "breeze-natives" % "0.11.2"
 
 javacOptions ++= Seq("-source", "1.8", "-target", "1.8")
 
