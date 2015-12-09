@@ -16,7 +16,7 @@ case class TranslateOp(command:String,args:TranslateOpArg)
 case class ScaleOpArg(sX:Float, sY:Option[Float])
 case class ScaleOp(command:String, args:ScaleOpArg)
 
-case class RotateOpArg(rAngle:Float, cX:Option[Float], cYOption:Option[Float])
+case class RotateOpArg(rAngle:Float, translateArg:Option[(Float,Float)])
 case class RotateOp(command:String,args:RotateOpArg)
 
 case class SkewXOpArg(skAngle:Float)

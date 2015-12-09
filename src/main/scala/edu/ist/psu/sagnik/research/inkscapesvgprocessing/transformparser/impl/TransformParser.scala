@@ -79,8 +79,8 @@ class TransformParser extends RegexParsers {
 
   def rotate:Parser[RotateOp]=
     """rotate""".r~rep(wsp)~"""\(""".r~rep(wsp)~number~opt(comma_wsp~number~comma_wsp~number)~rep(wsp)~"""\)""".r^^{
-      case c~ws1~lb~ws2~angle~Some(cw1~cx~cw2~cy)~ws3~rb=>RotateOp("rotate",RotateOpArg(angle.toFloat,Some(cx.toFloat),Some(cy.toFloat)))
-      case c~ws1~lb~ws2~angle~None~ws3~rb=>RotateOp("rotate",RotateOpArg(angle.toFloat,None,None))
+      case c~ws1~lb~ws2~angle~Some(cw1~cx~cw2~cy)~ws3~rb=>RotateOp("rotate",RotateOpArg(angle.toFloat,Some(cx.toFloat,cy.toFloat)))
+      case c~ws1~lb~ws2~angle~None~ws3~rb=>RotateOp("rotate",RotateOpArg(angle.toFloat,None))
     }
 
   def scale:Parser[ScaleOp]=
@@ -122,27 +122,87 @@ class TransformParser extends RegexParsers {
     case ws1~None~ws2 => None
   }
 
+  def digitReduce(d:Double)=BigDecimal(d).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
+  def D2R(deg:Double)=deg*(scala.math.Pi/180)
+  def R2D(deg:Double)=deg/(scala.math.Pi/180)
+  def cosine(deg:Double)=digitReduce(scala.math.cos(D2R(deg)))
+  def sine(deg:Double)=digitReduce(scala.math.sin(D2R(deg)))
+  def tan(deg:Double)=digitReduce(scala.math.tan(D2R(deg)))
+
+  //see http://www.w3.org/TR/SVG/coords.html#TransformMatrixDefined
   def getMatrix[A](a:A):DenseMatrix[Float]=
    a match{
      case a:MatrixOp => {
        val margs=a.args
-       val arr=Array[Float](margs.a,margs.b,margs.c,margs.d,margs.e,margs.f,0f,0f,1f)
+       val arr=Array[Float](margs.a,margs.c,margs.e,margs.b,margs.d,margs.f,0f,0f,1f)
        new DenseMatrix[Float](3,3,arr)
      }
      case a:TranslateOp=>{
        val margs=a.args
        val tY= margs.tY match{ case Some(tY) => tY case _ => 0f}
-       val arr=Array[Float](1f,0f,0f,1f,margs.tX,tY)
+       val arr=Array[Float](
+       1f,0f,margs.tX,
+       0f,1f,tY,
+       0,0,1
+       )
        new DenseMatrix[Float](3,3,arr)
      }
-       
+     case a:ScaleOp=>{
+       val margs=a.args
+       val sY= margs.sY match{ case Some(sY) => sY case _ => margs.sX}
+       val arr=Array[Float](
+       margs.sX,0f,0f,
+       0f,sY,0f,
+       0f,0f,1f
+       )
+       new DenseMatrix[Float](3,3,arr)
+     }
+     case a:RotateOp=>{
+       val margs=a.args
+       val translteArgs= margs.translateArg match{ case Some((cX,cY)) => (cX,cY) case _ => (0f,0f)}
+       val arr=Array[Float](
+       cosine(margs.rAngle).toFloat,-sine(margs.rAngle).toFloat,0f,
+       sine(margs.rAngle).toFloat,cosine(margs.rAngle).toFloat,0f,
+       0f,0f,1f
+       )
+       if (translteArgs._1==0 && translteArgs._2==0)
+         new DenseMatrix[Float](3,3,arr)
+       else{
+         val tX=translteArgs._1
+         val tY= translteArgs._2
+         val translatePositiveArr=Array[Float](1f,0f,tX,0f,1f,tY,0,0,1)
+         val translateNegativeArr=Array[Float](1f,0f,-tX,0f,1f,-tY,0,0,1)
+         new DenseMatrix[Float](3,3, translatePositiveArr)*
+           new DenseMatrix[Float](3,3,arr)*
+           new DenseMatrix[Float](3,3, translateNegativeArr)
+       }
+     }
+     case a:SkewXOp=>{
+       val margs=a.args
+       val arr=Array[Float](
+       1f,tan(margs.skAngle).toFloat,0f,
+       0f,1f,0f,
+       0f,0f,1f
+       )
+       new DenseMatrix[Float](3,3,arr)
+     }
+     case a:SkewYOp=>{
+       val margs=a.args
+       val arr=Array[Float](
+       1f,tan(margs.skAngle).toFloat,0f,
+       0f,1f,0f,
+       0f,0f,1f
+       )
+       new DenseMatrix[Float](3,3,arr)
+     }
+
    }
 
 }
 
 object TestTransformParser extends TransformParser{
   def main(args: Array[String]) = {
-    val command="translate(-10,-20) scale(2) rotate(45) translate(5,10)"
+    val command="translate(-10,-20)"
     parse(transform_list,command) match {
       case Success(matched,_) => println(s"[matched]: ${matched}")
       case Failure(msg,_) => println("FAILURE: " + msg)
