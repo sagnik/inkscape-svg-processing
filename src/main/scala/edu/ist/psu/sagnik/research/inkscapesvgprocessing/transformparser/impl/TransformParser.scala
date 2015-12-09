@@ -73,35 +73,35 @@ class TransformParser extends RegexParsers {
 
   //TODO: to check why can't avoid case statement
   def skewY:Parser[SkewYOp]=
-    """skewY""".r~rep(wsp)~"""(""".r~rep(wsp)~number~rep(wsp)~""")""".r^^{
+    """skewY""".r~rep(wsp)~"""\(""".r~rep(wsp)~number~rep(wsp)~"""\)""".r^^{
       case c~ws1~lb~ws2~angle~ws3~rb => SkewYOp("skewY",SkewYOpArg(angle.toFloat))
     }
 
   def skewX:Parser[SkewXOp]=
-    """skewY""".r~rep(wsp)~"""(""".r~rep(wsp)~number~rep(wsp)~""")""".r^^{
+    """skewY""".r~rep(wsp)~"""\(""".r~rep(wsp)~number~rep(wsp)~"""\)""".r^^{
       case c~ws1~lb~ws2~angle~ws3~rb => SkewXOp("skewY",SkewXOpArg(angle.toFloat))
     }
 
   def rotate:Parser[RotateOp]=
-    """rotate""".r~rep(wsp)~"""(""".r~rep(wsp)~number~opt(comma_wsp~number~comma_wsp~number)~rep(wsp)~""")""".r^^{
+    """rotate""".r~rep(wsp)~"""\(""".r~rep(wsp)~number~opt(comma_wsp~number~comma_wsp~number)~rep(wsp)~"""\)""".r^^{
       case c~ws1~lb~ws2~angle~Some(cw1~cx~cw2~cy)~ws3~rb=>RotateOp("rotate",RotateOpArg(angle.toFloat,Some(cx.toFloat),Some(cy.toFloat)))
       case c~ws1~lb~ws2~angle~None~ws3~rb=>RotateOp("rotate",RotateOpArg(angle.toFloat,None,None))
     }
 
   def scale:Parser[ScaleOp]=
-    """scale""".r~rep(wsp)~"""(""".r~rep(wsp)~number~opt(comma_wsp~number)~rep(wsp)~""")""".r^^{
+    """scale""".r~rep(wsp)~"""\(""".r~rep(wsp)~number~opt(comma_wsp~number)~rep(wsp)~"""\)""".r^^{
       case c~ws1~lb~ws2~sx~Some(cw~sy)~ws3~rb => ScaleOp("scale",ScaleOpArg(sx.toFloat,Some(sy.toFloat)))
       case c~ws1~lb~ws2~sx~None~ws3~rb => ScaleOp("scale",ScaleOpArg(sx.toFloat,None))
     }
 
   def translate:Parser[TranslateOp]=
-    """translate""".r~rep(wsp)~"""(""".r~rep(wsp)~number~opt(comma_wsp~number)~rep(wsp)~""")""".r^^{
+    """translate""".r~rep(wsp)~"""\(""".r~rep(wsp)~number~opt(comma_wsp~number)~rep(wsp)~"""\)""".r^^{
       case c~ws1~lb~ws2~tx~Some(cw~ty)~ws3~rb => TranslateOp("translate",TranslateOpArg(tx.toFloat,Some(ty.toFloat)))
       case c~ws1~lb~ws2~tx~None~ws3~rb =>  TranslateOp("translate",TranslateOpArg(tx.toFloat,None))
     }
 
   def matrix:Parser[MatrixOp]=
-    """matrix""".r~rep(wsp)~"""(""".r~rep(wsp)~number~comma_wsp~number~comma_wsp~number~comma_wsp~number~comma_wsp~number~comma_wsp~number~rep(wsp)~""")""".r^^{
+    """matrix""".r~rep(wsp)~"""\(""".r~rep(wsp)~number~comma_wsp~number~comma_wsp~number~comma_wsp~number~comma_wsp~number~comma_wsp~number~rep(wsp)~"""\)""".r^^{
       case m~ws1~lb~ws2~a~cw1~b~cw2~c~cw3~d~cw4~e~cw5~f~ws3~rb =>
         MatrixOp("matrix",MatrixOpArg(a.toFloat,b.toFloat,c.toFloat,d.toFloat,e.toFloat,f.toFloat))
     }
@@ -114,17 +114,12 @@ class TransformParser extends RegexParsers {
       skewX^^{a=>a}|
       skewY^^{a=>a}
 
-//  transform-list ::=
-//    wsp* transforms? wsp*
-//      transforms ::=
-//    transform
-//  | transform comma-wsp+ transforms
-
   def transforms:Parser[Seq[TransformCommand]]=
-  transform^^{a=>List(a)}|
-  transform~comma_wsp~rep(comma_wsp)~transforms^^{
-    case t~cw1~cw2~ts=> if (ts.isEmpty) List(t) else t+:ts
-  }
+    transform~comma_wsp~rep(comma_wsp)~transforms^^{
+      case t~cw1~cw2~ts=> {println(ts); if (ts.isEmpty) List(t) else t+:ts}
+    }|
+  transform^^{a=>List(a)}
+
 
   def transform_list:Parser[Option[Seq[TransformCommand]]]=
   rep(wsp)~opt(transforms)~rep(wsp)^^{
@@ -136,9 +131,8 @@ class TransformParser extends RegexParsers {
 
 object TestTransformParser extends TransformParser{
   def main(args: Array[String]) = {
-    parse(digit_sequence, "12345") match {
-      //  parse(wsp, " ") match {
-      //    parse(coordinate_pair, "12    20") match {
+    val command="translate(-10,-20) scale(2) rotate(45) translate(5,10)"
+    parse(transform_list,command) match {
       case Success(matched,_) => println(s"[matched]: ${matched}")
       case Failure(msg,_) => println("FAILURE: " + msg)
       case Error(msg,_) => println("ERROR: " + msg)
