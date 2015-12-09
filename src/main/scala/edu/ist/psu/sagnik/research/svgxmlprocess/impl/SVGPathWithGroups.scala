@@ -83,7 +83,7 @@ object SVGPathWithGroups {
         case (k, v) => (k,
           parentMap.get(v) match {
             case Some(a) => v +: a
-            case _ => List(v).toIndexedSeq
+            case _ => List(v)
           }
           )
       }

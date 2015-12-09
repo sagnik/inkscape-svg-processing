@@ -54,19 +54,19 @@ object BoundingBoxesTester extends SVGPathParser{
  def printBB[A<: PathCommand](p:A,lep:CordPair):Unit=
       p match {
         case p: QBC => println("[Quadretic Beizer Curve BB]: "+
-          p.getBoundingBox[QBCPath](lep, p.isAbsolute, p.args,Rectangle (0, 0, 0, 0)))
+          p.getBoundingBox[QBCPath](lep, p.isAbsolute, p.args))
         case p: EllipseCommand => println("[Ellipse BB]: "+
-          p.getBoundingBox[EllipsePath](lep, p.isAbsolute, p.args,Rectangle (0, 0, 0, 0)))
+          p.getBoundingBox[EllipsePath](lep, p.isAbsolute, p.args))
         case p: Line => println("[Line BB]: "+
-          p.getBoundingBox[LinePath](lep, p.isAbsolute, p.args,Rectangle (0, 0, 0, 0)))
+          p.getBoundingBox[LinePath](lep, p.isAbsolute, p.args))
         case p: HL => println("[Horizontal Line BB]: "+
-          p.getBoundingBox[HLPath](lep, p.isAbsolute, p.args,Rectangle (0, 0, 0, 0)))
+          p.getBoundingBox[HLPath](lep, p.isAbsolute, p.args))
         case p: VL => println("[Vertical Line BB]: "+
-          p.getBoundingBox[VLPath](lep, p.isAbsolute, p.args,Rectangle (0, 0, 0, 0)))
+          p.getBoundingBox[VLPath](lep, p.isAbsolute, p.args))
         case p: SMC => println("[Smooth Curve BB]: "+
-          p.getBoundingBox[SMCPath](lep, p.isAbsolute, p.args,Rectangle (0, 0, 0, 0)))
+          p.getBoundingBox[SMCPath](lep, p.isAbsolute, p.args))
         case p: SmQBC => println("[Smooth Quadretic Curve BB]: "+
-          p.getBoundingBox[SmQBCPath](lep, p.isAbsolute, p.args,Rectangle (0, 0, 0, 0)))
+          p.getBoundingBox[SmQBCPath](lep, p.isAbsolute, p.args))
         case _ => ???
       }
 

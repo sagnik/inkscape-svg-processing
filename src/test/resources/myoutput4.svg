@@ -1,6 +1,28 @@
 <?xml version="1.0" standalone="no"?>
 
-<svg width="190px" height="160px" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<svg width="1052.5" height="743.75" version="1.1" xmlns="http://www.w3.org/2000/svg">
 
-  <path d="M10 10 C 20 20, 40 20, 50 10 70 20, 120 20, 120 10 120 20, 180 20, 170 10" stroke="red" fill="transparent"/>
+  <path transform="scale(2)" d="M10 10 C 20 20, 40 20, 50 10 70 20, 120 20, 120 10 120 20, 180 20, 170 10" stroke="red" fill="transparent"/>
+  <path d="M10 20 L 100 200" stroke="blue" fill="transparent"/>
+  <!-- rect x="10" y="20" width="90" height="180" fill="transparent" stroke="black" stroke-width="1"  / -->
+  <g transform="translate(-200,-400)">"
+  <g transform="matrix(1.25,0,0,-1.25,0,1052.5)">
+  <g transform="scale(0.1,0.1)">
+  <!--path
+
+             d="m 3964.54,3342.8 251.35,0 m -251.35,17.43 0,-34.86 m 251.35,34.86 0,-34.86
+              m -1742.01,88.84 264.28,637.09 528.57,5.62 528.56,-301.39 264.28,-66.92
+              m -1585.69,-324.44 0,99.52 m -17.43,-99.52 34.86,0 m -34.86,99.52 34.86,0
+              m 246.85,498.2 0,178.25 m -17.43,-178.25 34.86,0 m -34.86,178.25 34.86,0
+              m 511.14,-149.57 0,132.7 m -17.43,-132.7 34.86,0 m -34.86,132.7 34.86,0
+              m 511.13,-414.41 0,93.9 m -17.43,-93.9 34.86,0 m -34.86,93.9 34.86,0
+              m 246.85,-144.51 0,60.17 m -17.43,-60.17 34.86,0 m -34.86,60.17 34.86,0"
+             id="path186"
+             style="fill:none;stroke:#ff0000;stroke-width:2.81151009;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-opacity:1;stroke-dasharray:none"
+             /-->
+     <path d="m 3964.54,3342.8 251.35,0 m -251.35,17.43 0,-34.86 m 251.35,34.86 0,-34.86 m -1742.01,88.84 264.28,637.09 528.57,5.62 528.56,-301.39 264.28,-66.92 m -1585.69,-324.44 0,99.52 m -17.43,-99.52 34.86,0 m -34.86,99.52 34.86,0 m 246.85,498.2 0,178.25 m -17.43,-178.25 34.86,0 m -34.86,178.25 34.86,0 m 511.14,-149.57 0,132.7 m -17.43,-132.7 34.86,0 m -34.86,132.7 34.86,0 m 511.13,-414.41 0,93.9 m -17.43,-93.9 34.86,0 m -34.86,93.9 34.86,0 m 246.85,-144.51 0,60.17 m -17.43,-60.17 34.86,0 m -34.86,60.17 34.86,0" style="fill:none;stroke:#ff0000;stroke-width:2.81151009;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1" id="path186" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"/>
+    <rect x="2456" y="3325" width="1760" height="815" fill="transparent" stroke="black" stroke-width="1"  />
+   </g>
+   </g>
+   </g>
 </svg>
