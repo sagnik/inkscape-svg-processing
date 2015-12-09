@@ -5,14 +5,7 @@ package edu.ist.psu.sagnik.research.inkscapesvgprocessing.transformparser.impl
  */
 
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.transformparser.model._
-
 import scala.util.parsing.combinator.RegexParsers
-import scala.language.implicitConversions
-/**
- * Created by sagnik on 11/12/15.
- * ? => opt
- * * => rep
- * */
 
 class TransformParser extends RegexParsers {
 
