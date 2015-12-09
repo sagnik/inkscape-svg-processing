@@ -4,6 +4,8 @@ package edu.ist.psu.sagnik.research.inkscapesvgprocessing.transformparser.impl
  * Created by sagnik on 12/9/15.
  */
 
+import breeze.linalg._
+import breeze.numerics._
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.transformparser.model._
 import scala.util.parsing.combinator.RegexParsers
 
@@ -100,12 +102,12 @@ class TransformParser extends RegexParsers {
     }
 
   def transform:Parser[TransformCommand]=
-    matrix^^{a=>a}|
-      translate^^{a=>a}|
-      scale^^{a=>a}|
-      rotate^^{a=>a}|
-      skewX^^{a=>a}|
-      skewY^^{a=>a}
+    matrix^^{a=>TransformCommand(a.command,getMatrix[MatrixOp](a))}|
+      translate^^{a=>TransformCommand(a.command,getMatrix[TranslateOp](a))}|
+      scale^^{a=>TransformCommand(a.command,getMatrix[ScaleOp](a))}|
+      rotate^^{a=>TransformCommand(a.command,getMatrix[RotateOp](a))}|
+      skewX^^{a=>TransformCommand(a.command,getMatrix[SkewXOp](a))}|
+      skewY^^{a=>TransformCommand(a.command,getMatrix[SkewYOp](a))}
 
   def transforms:Parser[Seq[TransformCommand]]=
     transform~comma_wsp~rep(comma_wsp)~transforms^^{
@@ -119,6 +121,22 @@ class TransformParser extends RegexParsers {
     case ws1~Some(ts)~ws2 => Some(ts)
     case ws1~None~ws2 => None
   }
+
+  def getMatrix[A](a:A):DenseMatrix[Float]=
+   a match{
+     case a:MatrixOp => {
+       val margs=a.args
+       val arr=Array[Float](margs.a,margs.b,margs.c,margs.d,margs.e,margs.f,0f,0f,1f)
+       new DenseMatrix[Float](3,3,arr)
+     }
+     case a:TranslateOp=>{
+       val margs=a.args
+       val tY= margs.tY match{ case Some(tY) => tY case _ => 0f}
+       val arr=Array[Float](1f,0f,0f,1f,margs.tX,tY)
+       new DenseMatrix[Float](3,3,arr)
+     }
+       
+   }
 
 }
 
