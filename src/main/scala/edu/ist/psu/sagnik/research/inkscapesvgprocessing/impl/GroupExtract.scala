@@ -1,7 +1,7 @@
-package edu.ist.psu.sagnik.research.svgxmlprocess.impl
+package edu.ist.psu.sagnik.research.inkscapesvgprocessing.impl
 
-import edu.ist.psu.sagnik.research.svgxmlprocess.model.{groupTransformOp, SVGGroup, SVGPath}
-import edu.ist.psu.sagnik.research.svgxmlprocess.reader.XMLReader
+import edu.ist.psu.sagnik.research.inkscapesvgprocessing.model.{groupTransformOp, SVGGroup, SVGPath}
+import edu.ist.psu.sagnik.research.inkscapesvgprocessing.reader.XMLReader
 
 /**
  * Created by sagnik on 11/11/15.

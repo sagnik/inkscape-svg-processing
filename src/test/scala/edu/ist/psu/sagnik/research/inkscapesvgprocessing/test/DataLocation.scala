@@ -1,4 +1,4 @@
-package edu.ist.psu.sagnik.research.svgxmlprocess.test
+package edu.ist.psu.sagnik.research.inkscapesvgprocessing.test
 
 /**
  * Created by szr163 on 11/8/15.

@@ -1,7 +1,7 @@
 
 organization := "edu.ist.psu.sagnik.research"
 
-name := "scala-xml-playground"
+name := "inkscape-svg-processing"
 
 version := "0.0.1"
 

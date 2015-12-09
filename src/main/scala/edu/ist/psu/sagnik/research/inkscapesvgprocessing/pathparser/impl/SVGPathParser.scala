@@ -1,6 +1,6 @@
-package edu.ist.psu.sagnik.research.svgxmlprocess.parsers.impl
+package edu.ist.psu.sagnik.research.inkscapesvgprocessing.pathparser.impl
 
-import edu.ist.psu.sagnik.research.svgxmlprocess.parsers.model._
+import edu.ist.psu.sagnik.research.inkscapesvgprocessing.pathparser.model._
 
 import scala.util.parsing.combinator.RegexParsers
 import scala.language.implicitConversions

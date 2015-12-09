@@ -1,6 +1,7 @@
-package edu.ist.psu.sagnik.research.svgxmlprocess.parsers.model
+package edu.ist.psu.sagnik.research.inkscapesvgprocessing.pathparser.model
 
-import edu.ist.psu.sagnik.research.svgxmlprocess.model.Rectangle
+import edu.ist.psu.sagnik.research.inkscapesvgprocessing.model.Rectangle
+import edu.ist.psu.sagnik.research.inkscapesvgprocessing.pathparser.impl.{RecursiveEP, RecursiveBB}
 
 /**
  * Created by sagnik on 11/19/15.
