@@ -7,7 +7,7 @@ import edu.ist.psu.sagnik.research.inkscapesvgprocessing.pathparser.model._
 /**
  * Created by sagnik on 12/4/15.
  */
-object SVGPath extends SVGPathParser{
+object SVGPathfromDString extends SVGPathParser{
 
   def getPathCommands(command:String):Seq[PathCommand]=
     parse(svg_path,command) match {

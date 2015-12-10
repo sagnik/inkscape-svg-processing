@@ -1,6 +1,7 @@
 package edu.ist.psu.sagnik.research.inkscapesvgprocessing.impl
 
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.model.{pathOp, SVGPath}
+import edu.ist.psu.sagnik.research.inkscapesvgprocessing.pathparser.impl.SVGPathfromDString
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.reader.XMLReader
 
 import scala.xml.{Node, NodeSeq}
@@ -35,8 +36,9 @@ object SVGPathWithGroups {
           },
           pdContent = x.attribute("d") match {case Some(con)=>con.text case _ => ""},
           pContent=x.toString(),
-          pOps = Seq.empty[pathOp],
-          gIds = Seq.empty[String]
+          pOps = SVGPathfromDString.getPathCommands(x.attribute("d") match {case Some(con)=>con.text case _ => ""}),
+          gIds = Seq.empty[String],
+          transformString=x.attribute("transform") match {case Some(con)=>con.text case _ => ""}
         )
       )
 
@@ -52,8 +54,9 @@ object SVGPathWithGroups {
             case _ => ""
           },
           pContent = x.path.toString(),
-          pOps = Seq.empty[pathOp],
-          gIds = x.gIds
+          pOps = SVGPathfromDString.getPathCommands(x.path.attribute("d") match {case Some(con)=>con.text case _ => ""}),
+          gIds = x.gIds,
+          transformString=x.path.attribute("transform") match {case Some(con)=>con.text case _ => ""}
         )
       )
     topLevelSVGPaths ++ lowerLevelSVGpaths
