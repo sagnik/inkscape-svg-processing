@@ -5,7 +5,6 @@ package edu.ist.psu.sagnik.research.inkscapesvgprocessing.transformparser.impl
  */
 
 import breeze.linalg._
-import breeze.numerics._
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.transformparser.model._
 import scala.util.parsing.combinator.RegexParsers
 
@@ -73,7 +72,7 @@ class TransformParser extends RegexParsers {
     }
 
   def skewX:Parser[SkewXOp]=
-    """skewY""".r~rep(wsp)~"""\(""".r~rep(wsp)~number~rep(wsp)~"""\)""".r^^{
+    """skewX""".r~rep(wsp)~"""\(""".r~rep(wsp)~number~rep(wsp)~"""\)""".r^^{
       case c~ws1~lb~ws2~angle~ws3~rb => SkewXOp("skewY",SkewXOpArg(angle.toFloat))
     }
 
@@ -113,14 +112,14 @@ class TransformParser extends RegexParsers {
     transform~comma_wsp~rep(comma_wsp)~transforms^^{
       case t~cw1~cw2~ts=> {println(ts); if (ts.isEmpty) List(t) else t+:ts}
     }|
-  transform^^{a=>List(a)}
+      transform^^{a=>List(a)}
 
 
   def transform_list:Parser[Option[Seq[TransformCommand]]]=
-  rep(wsp)~opt(transforms)~rep(wsp)^^{
-    case ws1~Some(ts)~ws2 => Some(ts)
-    case ws1~None~ws2 => None
-  }
+    rep(wsp)~opt(transforms)~rep(wsp)^^{
+      case ws1~Some(ts)~ws2 => Some(ts)
+      case ws1~None~ws2 => None
+    }
 
   def digitReduce(d:Double)=BigDecimal(d).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
   def D2R(deg:Double)=deg*(scala.math.Pi/180)
@@ -131,78 +130,86 @@ class TransformParser extends RegexParsers {
 
   //see http://www.w3.org/TR/SVG/coords.html#TransformMatrixDefined
   def getMatrix[A](a:A):DenseMatrix[Float]=
-   a match{
-     case a:MatrixOp => {
-       val margs=a.args
-       val arr=Array[Float](margs.a,margs.c,margs.e,margs.b,margs.d,margs.f,0f,0f,1f)
-       new DenseMatrix[Float](3,3,arr)
-     }
-     case a:TranslateOp=>{
-       val margs=a.args
-       val tY= margs.tY match{ case Some(tY) => tY case _ => 0f}
-       val arr=Array[Float](
-       1f,0f,margs.tX,
-       0f,1f,tY,
-       0,0,1
+    a match{
+      case a:MatrixOp => {
+        val margs=a.args
+        val arr=Array[Float](margs.a,margs.c,margs.e,margs.b,margs.d,margs.f,0f,0f,1f)
+        new DenseMatrix[Float](3,3,arr)
+      }
+      case a:TranslateOp=>{
+        val margs=a.args
+        val tY= margs.tY match{ case Some(tY) => tY case _ => 0f}
+        val arr=Array[Float](
+         1f,0f,0f,
+         0f,1f,0f,
+         margs.tX, tY,1
+         )
+        new DenseMatrix[Float](3,3,arr)
+      }
+      case a:ScaleOp=>{
+        val margs=a.args
+        val sY= margs.sY match{ case Some(sY) => sY case _ => margs.sX}
+        val arr=Array[Float](
+         margs.sX,0f,0f,
+         0f,sY,0f,
+         0f,0f,1f
        )
-       new DenseMatrix[Float](3,3,arr)
-     }
-     case a:ScaleOp=>{
-       val margs=a.args
-       val sY= margs.sY match{ case Some(sY) => sY case _ => margs.sX}
-       val arr=Array[Float](
-       margs.sX,0f,0f,
-       0f,sY,0f,
-       0f,0f,1f
+        new DenseMatrix[Float](3,3,arr)
+      }
+      case a:RotateOp=>{
+        val margs=a.args
+        val translteArgs= margs.translateArg match{ case Some((cX,cY)) => (cX,cY) case _ => (0f,0f)}
+        val arr=Array[Float](
+          cosine(margs.rAngle).toFloat,sine(margs.rAngle).toFloat,0f,
+          -sine(margs.rAngle).toFloat,cosine(margs.rAngle).toFloat,0f,
+          0f,0f,1f
        )
-       new DenseMatrix[Float](3,3,arr)
-     }
-     case a:RotateOp=>{
-       val margs=a.args
-       val translteArgs= margs.translateArg match{ case Some((cX,cY)) => (cX,cY) case _ => (0f,0f)}
-       val arr=Array[Float](
-       cosine(margs.rAngle).toFloat,-sine(margs.rAngle).toFloat,0f,
-       sine(margs.rAngle).toFloat,cosine(margs.rAngle).toFloat,0f,
-       0f,0f,1f
+        if (translteArgs._1==0 && translteArgs._2==0)
+          new DenseMatrix[Float](3,3,arr)
+        else{
+          val tX=translteArgs._1
+          val tY= translteArgs._2
+          val translatePositiveArr=Array[Float](
+           1f,0f,0f,
+           0f,1f,0f,
+           tX, tY,1
+           )
+          val translateNegativeArr=Array[Float](
+           1f,0f,0f,
+           0f,1f,0f,
+           -tX, -tY,1
+           )
+          new DenseMatrix[Float](3,3, translatePositiveArr)*
+            new DenseMatrix[Float](3,3,arr)*
+            new DenseMatrix[Float](3,3, translateNegativeArr)
+        }
+      }
+      case a:SkewXOp=>{
+        val margs=a.args
+        val arr=Array[Float](
+         1f,0f,0f,
+         tan(margs.skAngle).toFloat,1f,0f,
+         0f,0f,1f
+        )
+        new DenseMatrix[Float](3,3,arr)
+      }
+      case a:SkewYOp=>{
+        val margs=a.args
+        val arr=Array[Float](
+        1f,tan(margs.skAngle).toFloat,0f,
+        0f,1f,0f,
+        0f,0f,1f
        )
-       if (translteArgs._1==0 && translteArgs._2==0)
-         new DenseMatrix[Float](3,3,arr)
-       else{
-         val tX=translteArgs._1
-         val tY= translteArgs._2
-         val translatePositiveArr=Array[Float](1f,0f,tX,0f,1f,tY,0,0,1)
-         val translateNegativeArr=Array[Float](1f,0f,-tX,0f,1f,-tY,0,0,1)
-         new DenseMatrix[Float](3,3, translatePositiveArr)*
-           new DenseMatrix[Float](3,3,arr)*
-           new DenseMatrix[Float](3,3, translateNegativeArr)
-       }
-     }
-     case a:SkewXOp=>{
-       val margs=a.args
-       val arr=Array[Float](
-       1f,tan(margs.skAngle).toFloat,0f,
-       0f,1f,0f,
-       0f,0f,1f
-       )
-       new DenseMatrix[Float](3,3,arr)
-     }
-     case a:SkewYOp=>{
-       val margs=a.args
-       val arr=Array[Float](
-       1f,tan(margs.skAngle).toFloat,0f,
-       0f,1f,0f,
-       0f,0f,1f
-       )
-       new DenseMatrix[Float](3,3,arr)
-     }
+        new DenseMatrix[Float](3,3,arr)
+      }
 
-   }
+    }
 
 }
 
 object TestTransformParser extends TransformParser{
   def main(args: Array[String]) = {
-    val command="translate(-10,-20)"
+    val command="skewY(30)"
     parse(transform_list,command) match {
       case Success(matched,_) => println(s"[matched]: ${matched}")
       case Failure(msg,_) => println("FAILURE: " + msg)
