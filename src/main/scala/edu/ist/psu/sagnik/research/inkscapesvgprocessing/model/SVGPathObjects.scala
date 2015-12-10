@@ -14,8 +14,7 @@ case class groupTransformOp(operator:String,operand: Seq[Float])
 
 /* Data models for SVG paths*/
 case class SVGPath(id:String, pdContent:String, pContent:String, pOps:Seq[PathCommand],
-                   gIds:Seq[String], transformString:String, bb:Rectangle)
-
+                   gIds:Seq[String], transformString:String, bb:Option[Rectangle])
 
 /* Data models for SVG groups*/
 case class SVGGroup(id:String, gtContent:String, gContent:String, transformOps:Seq[groupTransformOp])

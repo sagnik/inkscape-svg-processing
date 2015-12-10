@@ -38,7 +38,8 @@ object SVGPathWithGroups {
           pContent=x.toString(),
           pOps = SVGPathfromDString.getPathCommands(x.attribute("d") match {case Some(con)=>con.text case _ => ""}),
           gIds = Seq.empty[String],
-          transformString=x.attribute("transform") match {case Some(con)=>con.text case _ => ""}
+          transformString=x.attribute("transform") match {case Some(con)=>con.text case _ => ""},
+          bb=None
         )
       )
 
@@ -56,7 +57,8 @@ object SVGPathWithGroups {
           pContent = x.path.toString(),
           pOps = SVGPathfromDString.getPathCommands(x.path.attribute("d") match {case Some(con)=>con.text case _ => ""}),
           gIds = x.gIds,
-          transformString=x.path.attribute("transform") match {case Some(con)=>con.text case _ => ""}
+          transformString=x.path.attribute("transform") match {case Some(con)=>con.text case _ => ""},
+          bb=None
         )
       )
     topLevelSVGPaths ++ lowerLevelSVGpaths
