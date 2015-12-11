@@ -3,6 +3,7 @@ package edu.ist.psu.sagnik.research.inkscapesvgprocessing.impl
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.model.{pathOp, SVGPath}
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.pathparser.impl.SVGPathfromDString
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.reader.XMLReader
+import edu.ist.psu.sagnik.research.inkscapesvgprocessing.transformparser.impl.TransformParser
 
 import scala.xml.{Node, NodeSeq}
 
@@ -38,7 +39,7 @@ object SVGPathWithGroups {
           pContent=x.toString(),
           pOps = SVGPathfromDString.getPathCommands(x.attribute("d") match {case Some(con)=>con.text case _ => ""}),
           gIds = Seq.empty[String],
-          transformString=x.attribute("transform") match {case Some(con)=>con.text case _ => ""},
+          transformOps=TransformParser(x \@ "transform"),
           bb=None
         )
       )
@@ -57,7 +58,7 @@ object SVGPathWithGroups {
           pContent = x.path.toString(),
           pOps = SVGPathfromDString.getPathCommands(x.path.attribute("d") match {case Some(con)=>con.text case _ => ""}),
           gIds = x.gIds,
-          transformString=x.path.attribute("transform") match {case Some(con)=>con.text case _ => ""},
+          transformOps=TransformParser(x.path \@ "transform"),
           bb=None
         )
       )

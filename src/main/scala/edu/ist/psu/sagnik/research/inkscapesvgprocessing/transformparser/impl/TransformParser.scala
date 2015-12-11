@@ -207,6 +207,14 @@ class TransformParser extends RegexParsers {
 
 }
 
+object TransformParser extends TransformParser{
+ def apply(command:String)=parse(transform_list,command) match {
+   case Success(matched,_) => matched match { case Some(commands) => commands; case _ => Seq.empty[TransformCommand]}
+   case Failure(msg,_) => {println("FAILURE: " + msg); Seq.empty[TransformCommand]}
+   case Error(msg,_) => {println("ERROR: " + msg); Seq.empty[TransformCommand]}
+ }
+}
+
 object TestTransformParser extends TransformParser{
   def main(args: Array[String]) = {
     val command="translate(-10,-20) scale(2) rotate(45) translate(5,10)"
