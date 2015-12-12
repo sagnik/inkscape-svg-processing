@@ -1,9 +1,12 @@
 package edu.ist.psu.sagnik.research.inkscapesvgprocessing.impl
 
-import breeze.linalg.DenseMatrix
+import breeze.linalg._
+
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.model.{SVGPath, Rectangle}
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.pathparser.impl.SVGPathfromDString
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.pathparser.model.{MovePath, CordPair}
+
+import scala.None
 
 /**
  * Created by sagnik on 12/11/15.
@@ -29,12 +32,12 @@ object SVGPathBB {
     val finalTMatrix=transforms.map(a=>a.matrix)
       .foldLeft(DenseMatrix.eye[Float](3))((a,b)=>a*b)
 
-    println(s"[path id]: ${svgPath.id}\n---------------------\n")
-    transforms.foreach(println)
-    println(s"[final matrix]: ${finalTMatrix}")
-    println(s"\n---------------------\n")
+    //    println(s"[path id]: ${svgPath.id}\n---------------------\n")
+    //    transforms.foreach(println)
+    //    println(s"[final matrix]: ${finalTMatrix}")
+    //    println(s"\n---------------------\n")
 
-    svgPath.copy(pContent = addTransforms(svgPath.pContent,finalTMatrix))
+    svgPath.copy(pContent = addTransforms(svgPath.pContent,finalTMatrix), bb=changedBB(pathBBwoTransforms,finalTMatrix))
   }
 
   def addTransforms(pC:String,ftMat:DenseMatrix[Float]):String=
@@ -49,12 +52,18 @@ object SVGPathBB {
         ftMat(1,1).toString+","+ //d
         ftMat(0,2).toString+","+ //e
         ftMat(1,2).toString+")\"" //f
-      if (pC.contains("transform=")) {
-        val changedPC=pC.replaceAll("transform=.*\"", transformStr)
-        println(s"[changed pC]: ${changedPC}")
-      }
-      pC
+
+      if (pC.contains("transform="))
+        pC.replaceAll("transform=.*\\)\"", transformStr)
+      else pC.replace("<path","<path "+transformStr)
     }
 
+  def changedBB(bb:Rectangle,fm:DenseMatrix[Float]):Option[Rectangle]=
+    if (Rectangle(0,0,0,0).equals(bb)) None
+    else{
+      val topleft=inv(fm)*(new DenseMatrix[Double](3,1,Array[Double](bb.x1,bb.y1,1)))
+      val rightbottom=inv(fm)*(new DenseMatrix[Double](3,1,Array[Double](bb.x2,bb.y2,1)))
+      Some(Rectangle(topleft(1,0).toFloat,topleft(2,0).toFloat,rightbottom(1,0).toFloat,rightbottom(2,0).toFloat))
+    }
 
 }
