@@ -133,7 +133,11 @@ class TransformParser extends RegexParsers {
     a match{
       case a:MatrixOp => {
         val margs=a.args
-        val arr=Array[Float](margs.a,margs.c,margs.e,margs.b,margs.d,margs.f,0f,0f,1f)
+        val arr=Array[Float](
+          margs.a,margs.b,0f,
+          margs.c,margs.d,0f,
+          margs.e,margs.f,1f
+          )
         new DenseMatrix[Float](3,3,arr)
       }
       case a:TranslateOp=>{

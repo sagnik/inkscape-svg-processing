@@ -1,6 +1,6 @@
 package edu.ist.psu.sagnik.research.inkscapesvgprocessing.impl
 
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.model.{groupTransformOp, SVGGroup, SVGPath}
+import edu.ist.psu.sagnik.research.inkscapesvgprocessing.model.SVGGroup
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.reader.XMLReader
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.transformparser.impl.TransformParser
 
@@ -24,6 +24,6 @@ object GroupExtract {
   def main(args: Array[String]):Unit={
     val loc="src/test/resources/pg_0006.svg"
     val groups=GroupExtract(loc)
-    groups.foreach(println)
+    groups.foreach(a=>println(s"[group id]: ${a.id} [tramsformops]: ${a.transformOps}"))
   }
 }

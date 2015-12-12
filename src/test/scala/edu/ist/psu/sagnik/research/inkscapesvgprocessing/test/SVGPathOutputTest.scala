@@ -14,7 +14,7 @@ class SVGPathOutputTest extends FunSpec {
     it("should print the path info.") {
       val results=SVGPathWithGroups(svgFileLoc)
 
-      results.foreach(x=>println(s"[path content]: ${x.pContent}, [path id]: ${x.id}, [groupIds]: ${x.gIds}"))
+      results.foreach(x=>println(s"[path id]: ${x.id}, [groups]: ${x.groups.map(x=>x.transformOps)}"))
 
       /*assert(results.find(p=>p.id=="p1").head.gIds.isEmpty)
       assert(results.find(p=>p.id=="p2").head.gIds.isEmpty)

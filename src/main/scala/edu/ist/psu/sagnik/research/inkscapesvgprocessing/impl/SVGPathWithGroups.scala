@@ -1,6 +1,6 @@
 package edu.ist.psu.sagnik.research.inkscapesvgprocessing.impl
 
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.model.{pathOp, SVGPath}
+import edu.ist.psu.sagnik.research.inkscapesvgprocessing.model.{PathGroups, SVGGroup, SVGPath}
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.pathparser.impl.SVGPathfromDString
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.reader.XMLReader
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.transformparser.impl.TransformParser
@@ -14,11 +14,9 @@ import scala.xml.{Node, NodeSeq}
 
 object SVGPathWithGroups {
 
-  case class PathGroups(path:Node,gIds:Seq[String])
+  def apply(fileLoc:String)=getPaths(XMLReader(fileLoc),GroupExtract.apply(fileLoc))
 
-  def apply(fileLoc:String)=getPaths(XMLReader(fileLoc))
-
-  def getPaths(xmlContent:scala.xml.Elem):Seq[SVGPath]= {
+  def getPaths(xmlContent:scala.xml.Elem, svgGroups:Seq[SVGGroup]):Seq[SVGPath]= {
 
     val topLevelPaths = xmlContent \ "path"
     val gIdMap=getGroupParents((xmlContent \ "g"),(xmlContent \\ "g").map(a=>a \@ "id").groupBy(x=>x).map{case (k,v) => (k,Seq.empty[String]) })
@@ -26,7 +24,6 @@ object SVGPathWithGroups {
     //gIdMap.foreach(x=>println(s"[group number]: ${x._1} [parent group]: ${x._2}"))
 
     val lowerLevelPaths=iterateOverGroups(xmlContent \ "g",Seq.empty[PathGroups],gIdMap)
-
 
     val topLevelSVGPaths=
       topLevelPaths.map(x =>
@@ -38,7 +35,7 @@ object SVGPathWithGroups {
           pdContent = x.attribute("d") match {case Some(con)=>con.text case _ => ""},
           pContent=x.toString(),
           pOps = SVGPathfromDString.getPathCommands(x.attribute("d") match {case Some(con)=>con.text case _ => ""}),
-          gIds = Seq.empty[String],
+          groups = Seq.empty[SVGGroup],
           transformOps=TransformParser(x \@ "transform"),
           bb=None
         )
@@ -57,12 +54,12 @@ object SVGPathWithGroups {
           },
           pContent = x.path.toString(),
           pOps = SVGPathfromDString.getPathCommands(x.path.attribute("d") match {case Some(con)=>con.text case _ => ""}),
-          gIds = x.gIds,
+          groups = svgGroups.filter(a=>x.gIds.contains(a.id)),
           transformOps=TransformParser(x.path \@ "transform"),
           bb=None
         )
       )
-    topLevelSVGPaths ++ lowerLevelSVGpaths
+    (topLevelSVGPaths ++ lowerLevelSVGpaths).map(x=>SVGPathBB.apply(x))
   }
 
   def iterateOverGroups(tlGs:NodeSeq,pathGIDs:Seq[PathGroups],gIdMap:Map[String,Seq[String]]):Seq[PathGroups]=
