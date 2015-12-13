@@ -14,6 +14,7 @@ class SVGPathOutputTest extends FunSpec {
     it("should print the path info.") {
       val results=SVGPathExtract(svgFileLoc)
 
+      //results.foreach(x=>println(x.pContent))
       results.foreach(
         x=>println(s"[path id]: ${x.id}, [pconent]: ${x.pContent}" +
         s"[pathbb ]: ${

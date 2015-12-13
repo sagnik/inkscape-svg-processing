@@ -19,6 +19,7 @@ object SVGPathExtract {
   def getPaths(xmlContent:scala.xml.Elem, svgGroups:Seq[SVGGroup]):Seq[SVGPath]= {
 
     val topLevelPaths = xmlContent \ "path"
+    //topLevelPaths.foreach(x=>println(s"[top level path]: ${x}"))
     val gIdMap=getGroupParents((xmlContent \ "g"),(xmlContent \\ "g").map(a=>a \@ "id").groupBy(x=>x).map{case (k,v) => (k,Seq.empty[String]) })
 
     //gIdMap.foreach(x=>println(s"[group number]: ${x._1} [parent group]: ${x._2}"))
