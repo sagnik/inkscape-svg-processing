@@ -12,7 +12,7 @@ import scala.xml.{Node, NodeSeq}
  */
 
 
-object SVGPathWithGroups {
+object SVGPathExtract {
 
   def apply(fileLoc:String)=getPaths(XMLReader(fileLoc),GroupExtract.apply(fileLoc))
 

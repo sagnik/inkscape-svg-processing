@@ -3,15 +3,11 @@ organization := "edu.ist.psu.sagnik.research"
 
 name := "inkscape-svg-processing"
 
-version := "0.0.1"
-
+version := "0.0.1-SNAPSHOT"
 
 javacOptions += "-Xlint:unchecked"
 
 scalaVersion := "2.11.7"
-
-crossScalaVersions := Seq("2.11.7", "2.10.5")
-
 
 resolvers ++= Seq(
   "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/",
