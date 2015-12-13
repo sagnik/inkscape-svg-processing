@@ -61,9 +61,16 @@ object SVGPathBB {
   def changedBB(bb:Rectangle,fm:DenseMatrix[Float]):Option[Rectangle]=
     if (Rectangle(0,0,0,0).equals(bb)) None
     else{
-      val topleft=inv(fm)*(new DenseMatrix[Double](3,1,Array[Double](bb.x1,bb.y1,1)))
-      val rightbottom=inv(fm)*(new DenseMatrix[Double](3,1,Array[Double](bb.x2,bb.y2,1)))
-      Some(Rectangle(topleft(1,0).toFloat,topleft(2,0).toFloat,rightbottom(1,0).toFloat,rightbottom(2,0).toFloat))
+      val topleft=fm*(new DenseMatrix[Float](3,1,Array[Float](bb.x1,bb.y1,1)))
+      val rightbottom=fm*(new DenseMatrix[Float](3,1,Array[Float](bb.x2,bb.y2,1)))
+      Some(
+        Rectangle(
+          min(topleft(0,0),rightbottom(0,0)),
+          min(topleft(1,0),rightbottom(1,0)),
+          max(topleft(0,0),rightbottom(0,0)),
+          max(topleft(1,0),rightbottom(1,0))
+        )
+      )
     }
 
 }

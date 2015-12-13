@@ -16,7 +16,13 @@ class SVGPathOutputTest extends FunSpec {
 
       results.foreach(
         x=>println(s"[path id]: ${x.id}, [pconent]: ${x.pContent}" +
-        s"[pathbb ]: ${x.bb}")
+        s"[pathbb ]: ${
+          x.bb match{
+            case Some(bb) => (bb.x1,bb.y1,bb.x2-bb.x1,bb.y2-bb.y1)
+            case None => None
+          }
+        }" +
+          s"")
       )
 
       /*assert(results.find(p=>p.id=="p1").head.gIds.isEmpty)
