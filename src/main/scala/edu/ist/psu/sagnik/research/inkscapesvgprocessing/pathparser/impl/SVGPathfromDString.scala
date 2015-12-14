@@ -21,9 +21,15 @@ object SVGPathfromDString extends SVGPathParser{
             if (x._2 == 0)
               x._1.asInstanceOf[Move].copy(isAbsolute = true)
             else x._1
+
           })
-          val firstMoveCommand = pathElems(0).asInstanceOf[Move]
-          pathElemsMod
+          pathElemsMod.zipWithIndex.map(x => {
+            if (x._2 == (pathElemsMod.length-1) && x._1.isInstanceOf[Close])
+              pathElemsMod(0)
+            else x._1
+
+          })
+
         }
       }
       case Failure(msg,_) => {println(s"couldn't parse the command ${msg}"); sys.exit(1);}

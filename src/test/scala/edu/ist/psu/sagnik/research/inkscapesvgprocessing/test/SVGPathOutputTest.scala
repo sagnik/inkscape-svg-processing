@@ -26,6 +26,8 @@ class SVGPathOutputTest extends FunSpec {
           s"")
       )
 
+      //results.filter(p=>"path170".equals(p.id)).foreach(x=>println(s"[path content]: ${x.pdContent} [pathcommands]: ${x.pOps} [pathbb] ${x.bb}"))
+
       /*assert(results.find(p=>p.id=="p1").head.gIds.isEmpty)
       assert(results.find(p=>p.id=="p2").head.gIds.isEmpty)
       assert(List("g1","g2").toSet.equals(results.find(p=>"p3".equals(p.id)).head.gIds.toSet))
