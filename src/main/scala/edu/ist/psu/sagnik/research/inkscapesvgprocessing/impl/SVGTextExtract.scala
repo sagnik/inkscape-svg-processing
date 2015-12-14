@@ -1,8 +1,9 @@
 package edu.ist.psu.sagnik.research.inkscapesvgprocessing.impl
 
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.model.{PathGroups, SVGPath, SVGGroup}
+import edu.ist.psu.sagnik.research.inkscapesvgprocessing.model.{TextGroups, PathGroups, SVGPath, SVGGroup}
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.pathparser.impl.SVGPathfromDString
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.reader.XMLReader
+import edu.ist.psu.sagnik.research.inkscapesvgprocessing.textparser.model.{TextPath, SVGChar}
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.transformparser.impl.TransformParser
 
 import scala.xml.NodeSeq
@@ -14,55 +15,44 @@ object SVGTextExtract {
 
   def apply(fileLoc:String)=getTexts(XMLReader(fileLoc),GroupExtract.apply(fileLoc))
 
-  def getTexts(xmlContent:scala.xml.Elem, svgGroups:Seq[SVGGroup]):Seq[SVGPath]= {
+  def getTexts(xmlContent:scala.xml.Elem, svgGroups:Seq[SVGGroup]):Seq[SVGChar]= {
 
-    val topLevelPaths = xmlContent \ "path"
-    //topLevelPaths.foreach(x=>println(s"[top level path]: ${x}"))
+    val topLevelTextPaths = xmlContent \ "text"
     val gIdMap=getGroupParents((xmlContent \ "g"),(xmlContent \\ "g").map(a=>a \@ "id").groupBy(x=>x).map{case (k,v) => (k,Seq.empty[String]) })
+    val lowerLevelTextPaths=iterateOverGroups(xmlContent \ "g",Seq.empty[TextGroups],gIdMap)
 
-    //gIdMap.foreach(x=>println(s"[group number]: ${x._1} [parent group]: ${x._2}"))
-
-    val lowerLevelPaths=iterateOverGroups(xmlContent \ "g",Seq.empty[PathGroups],gIdMap)
-
-    val topLevelSVGPaths=
-      topLevelPaths.map(x =>
-        SVGPath(
-          x.attribute("id") match {
+    val topLevelTextNodePaths=
+      topLevelTextPaths.map(x =>
+        TextPath(
+          id=x.attribute("id") match {
             case Some(idExists) => idExists.text
             case _ => "noID"
           },
-          pdContent = x.attribute("d") match {case Some(con)=>con.text case _ => ""},
-          pContent=x.toString(),
-          pOps = SVGPathfromDString.getPathCommands(x.attribute("d") match {case Some(con)=>con.text case _ => ""}),
-          groups = Seq.empty[SVGGroup],
+          styleString = x \@ "style", //x.attribute("style") match {case Some(con)=>con.text case _ => ""},
           transformOps=TransformParser(x \@ "transform"),
-          bb=None
+          groups = Seq.empty[SVGGroup],
+          tPContent = x.toString
         )
       )
 
-    val lowerLevelSVGpaths=
-      lowerLevelPaths.map(x =>
-        SVGPath(
-          x.path.attribute("id") match {
+    val lowerLevelTextNodepaths=
+      lowerLevelTextPaths.map(x =>
+        TextPath(
+          id=x.textNode.attribute("id") match {
             case Some(idExists) => idExists.text
             case _ => "noID"
           },
-          pdContent = x.path.attribute("d") match {
-            case Some(con) => con.text
-            case _ => ""
-          },
-          pContent = x.path.toString(),
-          pOps = SVGPathfromDString.getPathCommands(x.path.attribute("d") match {case Some(con)=>con.text case _ => ""}),
+          styleString= x.textNode \@ "style",
+          transformOps=TransformParser(x.textNode \@ "transform"),
           groups = svgGroups.filter(a=>x.gIds.contains(a.id)),
-          transformOps=TransformParser(x.path \@ "transform"),
-          bb=None
-        )
+          tPContent=x.textNode.toString
+          )
       )
-    (topLevelSVGPaths ++ lowerLevelSVGpaths).map(x=>SVGPathBB.apply(x))
+    Seq.empty[SVGChar]
   }
 
-  def iterateOverGroups(tlGs:NodeSeq,pathGIDs:Seq[PathGroups],gIdMap:Map[String,Seq[String]]):Seq[PathGroups]=
-    if (tlGs.length==0) pathGIDs
+  def iterateOverGroups(tlGs:NodeSeq,textPathGIDs:Seq[TextGroups],gIdMap:Map[String,Seq[String]]):Seq[TextGroups]=
+    if (tlGs.length==0) textPathGIDs
     else{
       val newGId=tlGs.head \@ "id" //TODO: What happens if the group doesn't have an ID?
       val parentGids=gIdMap.get(newGId) match{
@@ -70,7 +60,7 @@ object SVGTextExtract {
           case None => Seq.empty[String]
         }
 
-      val thisTLGpathGIDs=pathGIDs ++ (tlGs.head \ "path").map(x=>PathGroups(x,newGId +: parentGids))
+      val thisTLGpathGIDs=textPathGIDs ++ (tlGs.head \ "text").map(x=>TextGroups(x,newGId +: parentGids))
       iterateOverGroups(tlGs.tail ++ tlGs.head \"g",thisTLGpathGIDs, gIdMap)
 
     }
