@@ -20,5 +20,4 @@ case class SVGPath(id:String, pdContent:String, pContent:String, pOps:Seq[PathCo
 /* Data models for SVG groups*/
 case class SVGGroup(id:String, gtContent:String, gContent:String, transformOps:Seq[TransformCommand])
 
-
-//case class SVGPathwithBB(pContent:String, )
+case class SVGChar(textElemId:String,paintCommand:String,char:SVGCharObject)

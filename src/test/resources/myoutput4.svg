@@ -1,6 +1,6 @@
 <?xml version="1.0" standalone="no"?>
 
-<svg width="1052.5" height="743.75" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<svg height="1052.5" width="743.75" version="1.1" xmlns="http://www.w3.org/2000/svg">
 
   <path transform="scale(2)" d="M10 10 C 20 20, 40 20, 50 10 70 20, 120 20, 120 10 120 20, 180 20, 170 10" stroke="red" fill="transparent"/>
   <path d="M10 20 L 100 200" stroke="blue" fill="transparent"/>
