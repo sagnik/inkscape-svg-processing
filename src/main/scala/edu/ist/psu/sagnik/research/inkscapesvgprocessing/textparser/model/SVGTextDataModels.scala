@@ -12,6 +12,7 @@ import edu.ist.psu.sagnik.research.inkscapesvgprocessing.transformparser.model.T
 case class TextPath(id:String,styleString:String,transformOps:Seq[TransformCommand],
                      groups:Seq[SVGGroup],tPContent:String)
 
-case class TSpanPath(id:String,x:Seq[Float],y:Seq[Float],charString:String,textPath:TextPath,tspanStyle:String)
+case class TSpanPath(id:String,x:String,y:String,charString:List[Char],textPath:TextPath)
 
-case class SVGChar(content:Char,bb:Rectangle,groups:Seq[SVGGroup],charSVGString:String, styleString:String)
+case class SVGChar(content:Char,bb:Rectangle,charSVGString:String,
+                   styleString:String,transformOps:Seq[TransformCommand],groups:Seq[SVGGroup])
