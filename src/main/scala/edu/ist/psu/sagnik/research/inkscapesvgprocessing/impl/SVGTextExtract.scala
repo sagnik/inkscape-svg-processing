@@ -3,6 +3,7 @@ package edu.ist.psu.sagnik.research.inkscapesvgprocessing.impl
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.model.{TextGroups, PathGroups, SVGPath, SVGGroup}
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.pathparser.impl.SVGPathfromDString
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.reader.XMLReader
+import edu.ist.psu.sagnik.research.inkscapesvgprocessing.textparser.impl.SVGCharFactory
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.textparser.model.{TextPath, SVGChar}
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.transformparser.impl.TransformParser
 
@@ -20,6 +21,8 @@ object SVGTextExtract {
     val topLevelTextPaths = xmlContent \ "text"
     val gIdMap=getGroupParents((xmlContent \ "g"),(xmlContent \\ "g").map(a=>a \@ "id").groupBy(x=>x).map{case (k,v) => (k,Seq.empty[String]) })
     val lowerLevelTextPaths=iterateOverGroups(xmlContent \ "g",Seq.empty[TextGroups],gIdMap)
+
+    println(topLevelTextPaths.length,lowerLevelTextPaths.length)
 
     val topLevelTextNodePaths=
       topLevelTextPaths.map(x =>
@@ -48,6 +51,8 @@ object SVGTextExtract {
           tPContent=x.textNode.toString
           )
       )
+
+    (topLevelTextNodePaths++lowerLevelTextNodepaths).map(x=>SVGCharFactory(x))
     Seq.empty[SVGChar]
   }
 
