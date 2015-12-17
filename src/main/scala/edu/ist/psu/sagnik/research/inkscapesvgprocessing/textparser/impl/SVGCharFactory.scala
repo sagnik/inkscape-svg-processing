@@ -86,7 +86,7 @@ object SVGCharFactory {
                 y2=y+widthHeight
               ),
               styleString=styleString,
-              charSVGString = "",
+              charSVGString = ???,
               transformOps = tsp.textPath.transformOps,
               groups=tsp.textPath.groups
             )
