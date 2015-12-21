@@ -1,6 +1,6 @@
 package edu.ist.psu.sagnik.research.inkscapesvgprocessing.textparser.impl
 
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.impl.SVGTextExtract
+import edu.ist.psu.sagnik.research.inkscapesvgprocessing.impl.{SVGCharBB, SVGTextExtract}
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.model.Rectangle
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.textparser.model.{TSpanPath, TextPath, SVGChar}
 
@@ -14,9 +14,11 @@ object SVGCharFactory {
   def apply(textPath:TextPath):Seq[SVGChar]={
     val tspElems=scala.xml.XML.loadString(textPath.tPContent) \\ "tspan"
     val tsps=tspElems.map(x=>getTSpanObject(x.text,x,textPath))
-    val chars=TSpanToChar(tsps,0f,0f,Seq.empty[SVGChar])
+    //val chars=TSpanToChar(tsps,0f,0f,Seq.empty[SVGChar])
     //tsps.foreach(a=>println(a.id,a.textPath.groups.map(x=>x.id)))
-    chars.foreach(x=>println(x.content,x.bb))
+    //chars.foreach(x=>println(x.content,x.bb))
+    val chars=TSpanToChar(tsps,0f,0f,Seq.empty[SVGChar]).map(x=>SVGCharBB(x))
+    chars.foreach(x=>println(x.content,x.bb,x.charSVGString))
     Seq.empty[SVGChar]
   }
 
