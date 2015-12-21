@@ -15,10 +15,10 @@ object SVGCharFactory {
     val tspElems=scala.xml.XML.loadString(textPath.tPContent) \\ "tspan"
     val tsps=tspElems.map(x=>getTSpanObject(x.text,x,textPath))
     //val chars=TSpanToChar(tsps,0f,0f,Seq.empty[SVGChar])
-    //tsps.foreach(a=>println(a.id,a.textPath.groups.map(x=>x.id)))
+    tsps.foreach(a=>println(a.id,a.textPath.transformOps))
     //chars.foreach(x=>println(x.content,x.bb))
     val chars=TSpanToChar(tsps,0f,0f,Seq.empty[SVGChar]).map(x=>SVGCharBB(x))
-    chars.foreach(x=>println(x.content,x.bb,x.charSVGString))
+    //chars.foreach(x=>println(x.groups.map(y=>y.id),x.content))
     Seq.empty[SVGChar]
   }
 
@@ -43,7 +43,7 @@ object SVGCharFactory {
     }
 
   //TODO: lot's of assumptions here
-  def OneTspanToCharSeq(tsp:TSpanPath,txp:Float,typ:Float)= {
+  def OneTspanToCharSeq(tsp:TSpanPath,txp:Float,typ:Float):(Seq[SVGChar],Float,Float)= {
     val tspx=if ("".equals(tsp.x)) Seq.empty[Float].toList else (tsp.x.split("\\s+")).toList.map(a=>a.toFloat)
     val tspy=if ("".equals(tsp.y)) Seq.empty[Float].toList else (tsp.y.split("\\s+")).toList.map(a=>a.toFloat)
     if (tspx.isEmpty || tspy.isEmpty) {println("tspan x or y empty"); (Seq.empty[SVGChar], txp, typ)} //TODO: x,y positions can actually come from the text tag itself
@@ -53,6 +53,7 @@ object SVGCharFactory {
     else if ((tspx.length>1 && tspy.length>1))
       {println("both tspanx and tspan y contains more than one char");(Seq.empty[SVGChar], txp, typ)}
     else {
+      //TODO: we don't actually have a proper implementation here, because width can't properly be determined from the font size
       val charSeq=
         if (tspy.length==tsp.charString.length){
           val styleString=tsp.textPath.styleString
@@ -76,7 +77,7 @@ object SVGCharFactory {
         }
         else {
           val styleString=tsp.textPath.styleString
-          val widthHeight=if ("".equals(styleString)) 10f else styleString.split("font-size:")(1).split("px")(0).toFloat //TODO: possible exception?
+          val height=if ("".equals(styleString)) 10f else styleString.split("font-size:")(1).split("px")(0).toFloat //TODO: possible exception?
           val y=tspy(0)
           tsp.charString.zipWithIndex.map(c=>
             SVGChar(
@@ -84,22 +85,25 @@ object SVGCharFactory {
               bb=Rectangle(
                 x1=txp+tspx(c._2),
                 y1=y,
-                x2=txp+tspx(c._2)+widthHeight,
-                y2=y+widthHeight
+                x2=if (c._2<tsp.charString.length-1) txp+tspx(c._2+1)-0.1f else txp+tspx(c._2)+5f,
+                y2=y+height
               ),
               styleString=styleString,
-              charSVGString = ???,
+              charSVGString = "",
               transformOps = tsp.textPath.transformOps,
               groups=tsp.textPath.groups
             )
           )
         }
+      println(s"[tsp id]: ${tsp.id} [tsp content]: ${tsp.charString.mkString("")} " +
+        s"[tsp x start]: ${charSeq.head.bb.x1} [tsp x end]: ${charSeq.last.bb.x2}" +
+        s"[tsp y end]: ${charSeq.last.bb.y2}")
       (charSeq,charSeq.last.bb.x2,charSeq.last.bb.y2)
     }
   }
 
   def main(args: Array[String]):Unit={
-    val dataLoc="src/test/resources/pg_0006.svg"
+    val dataLoc="src/test/resources/textTest.svg"
     val textpaths=SVGTextExtract(dataLoc)
   }
 }

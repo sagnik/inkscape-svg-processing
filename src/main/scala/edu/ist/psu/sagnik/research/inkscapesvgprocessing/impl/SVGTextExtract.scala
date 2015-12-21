@@ -52,6 +52,7 @@ object SVGTextExtract {
           )
       )
 
+
     (topLevelTextNodePaths++lowerLevelTextNodepaths).map(x=>SVGCharFactory(x))
     Seq.empty[SVGChar]
   }
