@@ -11,13 +11,16 @@ import scala.xml.Node
  */
 object SVGCharFactory {
 
-  def apply(textPath:TextPath):Seq[SVGChar]={
-    val tspElems=scala.xml.XML.loadString(textPath.tPContent) \\ "tspan"
-    val tsps=tspElems.map(x=>getTSpanObject(x.text,x,textPath))
-    val chars=TSpanToChar(tsps,0f,0f,Seq.empty[SVGChar]).map(x=>SVGCharBB(x))
-    chars.foreach(x=>println(x.charSVGString))
-    chars
-  }
+  def apply(textPath:TextPath):Seq[SVGChar]=
+    TSpanToChar(
+      (scala.xml.XML.loadString(textPath.tPContent) \\ "tspan")
+        .map(x=>getTSpanObject(x.text,x,textPath)),
+      0f,
+      0f,
+      Seq.empty[SVGChar]
+    ).map(x=>SVGCharBB(x))
+
+
 
   def getTSpanObject(tsps:String,tspWhole:Node,tp:TextPath):TSpanPath=
     TSpanPath(
@@ -34,7 +37,7 @@ object SVGCharFactory {
       case Nil => Seq.empty[SVGChar]
       case tsp::Nil => chars++OneTspanToCharSeq(tsp,textXPosition,textYPosition)
       case tsp :: tsps => TSpanToChar(tsps,0,0,chars++OneTspanToCharSeq(tsp,textXPosition,textYPosition))
-      }
+    }
 
 
   //TODO: lot's of assumptions here
@@ -43,9 +46,9 @@ object SVGCharFactory {
     val tspy=if ("".equals(tsp.y)) Seq.empty[Float].toList else (tsp.y.split("\\s+")).toList.map(a=>a.toFloat)
     if (tspx.isEmpty || tspy.isEmpty) {println("tspan x or y empty"); (Seq.empty[SVGChar], txp, typ)} //TODO: x,y positions can actually come from the text tag itself
     if (!(tspx.length==tsp.charString.length) && !(tspy.length==tsp.charString.length))
-      {println("tspan x or tspan y doesn't have same number of elements as no. of chars"); Seq.empty[SVGChar]}
+    {println("tspan x or tspan y doesn't have same number of elements as no. of chars"); Seq.empty[SVGChar]}
     else if ((tspx.length>1 && tspy.length>1))
-      {println("both tspanx and tspan y contains more than one char");Seq.empty[SVGChar]}
+    {println("both tspanx and tspan y contains more than one char");Seq.empty[SVGChar]}
     else {
       //TODO: we don't actually have a proper implementation here, because width can't properly be determined from the font size
       val charSeq=
