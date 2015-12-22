@@ -14,12 +14,9 @@ object SVGCharFactory {
   def apply(textPath:TextPath):Seq[SVGChar]={
     val tspElems=scala.xml.XML.loadString(textPath.tPContent) \\ "tspan"
     val tsps=tspElems.map(x=>getTSpanObject(x.text,x,textPath))
-    //val chars=TSpanToChar(tsps,0f,0f,Seq.empty[SVGChar])
-    tsps.foreach(a=>println(a.id,a.textPath.transformOps))
-    //chars.foreach(x=>println(x.content,x.bb))
     val chars=TSpanToChar(tsps,0f,0f,Seq.empty[SVGChar]).map(x=>SVGCharBB(x))
-    //chars.foreach(x=>println(x.groups.map(y=>y.id),x.content))
-    Seq.empty[SVGChar]
+    chars.foreach(x=>println(x.charSVGString))
+    chars
   }
 
   def getTSpanObject(tsps:String,tspWhole:Node,tp:TextPath):TSpanPath=
@@ -35,23 +32,20 @@ object SVGCharFactory {
   def TSpanToChar(ts:Seq[TSpanPath],textXPosition:Float,textYPosition:Float, chars:Seq[SVGChar]):Seq[SVGChar]=
     ts match{
       case Nil => Seq.empty[SVGChar]
-      case tsp::Nil => chars++(OneTspanToCharSeq(tsp,textXPosition,textYPosition)._1)
-      case tsp :: tsps =>{
-        val results=OneTspanToCharSeq(tsp,textXPosition,textYPosition)
-        TSpanToChar(tsps,results._2,results._3,chars++results._1)
+      case tsp::Nil => chars++OneTspanToCharSeq(tsp,textXPosition,textYPosition)
+      case tsp :: tsps => TSpanToChar(tsps,0,0,chars++OneTspanToCharSeq(tsp,textXPosition,textYPosition))
       }
-    }
+
 
   //TODO: lot's of assumptions here
-  def OneTspanToCharSeq(tsp:TSpanPath,txp:Float,typ:Float):(Seq[SVGChar],Float,Float)= {
+  def OneTspanToCharSeq(tsp:TSpanPath,txp:Float,typ:Float):Seq[SVGChar]= {
     val tspx=if ("".equals(tsp.x)) Seq.empty[Float].toList else (tsp.x.split("\\s+")).toList.map(a=>a.toFloat)
     val tspy=if ("".equals(tsp.y)) Seq.empty[Float].toList else (tsp.y.split("\\s+")).toList.map(a=>a.toFloat)
     if (tspx.isEmpty || tspy.isEmpty) {println("tspan x or y empty"); (Seq.empty[SVGChar], txp, typ)} //TODO: x,y positions can actually come from the text tag itself
-    //println(s"[tspx length] ${tspx.length} [tspy length]: ${tspy.length} [no chars]: ${tsp.charString.length}")
     if (!(tspx.length==tsp.charString.length) && !(tspy.length==tsp.charString.length))
-      {println("tspan x or tspan y doesn't have same number of elements as no. of chars"); (Seq.empty[SVGChar], txp, typ)}
+      {println("tspan x or tspan y doesn't have same number of elements as no. of chars"); Seq.empty[SVGChar]}
     else if ((tspx.length>1 && tspy.length>1))
-      {println("both tspanx and tspan y contains more than one char");(Seq.empty[SVGChar], txp, typ)}
+      {println("both tspanx and tspan y contains more than one char");Seq.empty[SVGChar]}
     else {
       //TODO: we don't actually have a proper implementation here, because width can't properly be determined from the font size
       val charSeq=
@@ -95,15 +89,12 @@ object SVGCharFactory {
             )
           )
         }
-      println(s"[tsp id]: ${tsp.id} [tsp content]: ${tsp.charString.mkString("")} " +
-        s"[tsp x start]: ${charSeq.head.bb.x1} [tsp x end]: ${charSeq.last.bb.x2}" +
-        s"[tsp y end]: ${charSeq.last.bb.y2}")
-      (charSeq,charSeq.last.bb.x2,charSeq.last.bb.y2)
+      charSeq
     }
   }
 
   def main(args: Array[String]):Unit={
-    val dataLoc="src/test/resources/textTest.svg"
+    val dataLoc="src/test/resources/pg_0006.svg"
     val textpaths=SVGTextExtract(dataLoc)
   }
 }
