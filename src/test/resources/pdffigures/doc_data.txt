@@ -1,0 +1,54 @@
+InfoBegin
+InfoKey: ModDate
+InfoValue: D:20141125175500-08'00'
+InfoBegin
+InfoKey: PTEX.Fullbanner
+InfoValue: This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) kpathsea version 6.2.0
+InfoBegin
+InfoKey: CreationDate
+InfoValue: D:20141125175500-08'00'
+InfoBegin
+InfoKey: Author
+InfoValue: Christopher Clark
+InfoBegin
+InfoKey: Title
+InfoValue: Extracting Figures, Tables, and Captions from Computer Science Papers
+InfoBegin
+InfoKey: Creator
+InfoValue: TeX
+InfoBegin
+InfoKey: Producer
+InfoValue: pdfTeX-1.40.15
+PdfID0: a89063aadb5966ddf80e0618f5120bd9
+PdfID1: a89063aadb5966ddf80e0618f5120bd9
+NumberOfPages: 6
+PageMediaBegin
+PageMediaNumber: 1
+PageMediaRotation: 0
+PageMediaRect: 0 0 612 792
+PageMediaDimensions: 612 792
+PageMediaBegin
+PageMediaNumber: 2
+PageMediaRotation: 0
+PageMediaRect: 0 0 612 792
+PageMediaDimensions: 612 792
+PageMediaBegin
+PageMediaNumber: 3
+PageMediaRotation: 0
+PageMediaRect: 0 0 612 792
+PageMediaDimensions: 612 792
+PageMediaBegin
+PageMediaNumber: 4
+PageMediaRotation: 0
+PageMediaRect: 0 0 612 792
+PageMediaDimensions: 612 792
+PageMediaBegin
+PageMediaNumber: 5
+PageMediaRotation: 0
+PageMediaRect: 0 0 612 792
+PageMediaDimensions: 612 792
+PageMediaBegin
+PageMediaNumber: 6
+PageMediaRotation: 0
+PageMediaRect: 0 0 612 792
+PageMediaDimensions: 612 792

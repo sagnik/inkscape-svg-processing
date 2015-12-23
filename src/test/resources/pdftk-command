@@ -1,0 +1,1 @@
+pdftk pdffigures.pdf burst output pdffigures/page_%0d.pdf
