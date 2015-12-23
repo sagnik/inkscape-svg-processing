@@ -1,29 +1,48 @@
 package edu.ist.psu.sagnik.research.inkscapesvgprocessing.test
 
 /**
- * Created by sagnik on 12/23/15.
+ * Created by szr163 on 11/8/15.
  */
-
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.impl.{SVGPathExtract}
+import edu.ist.psu.sagnik.research.inkscapesvgprocessing.impl.{SVGTextExtract}
 import org.scalatest.FunSpec
 
-class SVGPathOutputTest extends FunSpec {
+import scala.reflect.io.File
+
+
+class SVGTextOutputTest extends FunSpec {
+
 
   describe("testing the SVG output by printing") {
     import edu.ist.psu.sagnik.research.inkscapesvgprocessing.test.DataLocation._
     it("should print the path info.") {
-      val results=SVGPathExtract(svgFileLoc)
+      //val results=SVGPathExtract(svgFileLoc)
+      val results=SVGTextExtract(svgFileLoc)
+      val text=results.map(x=>x.charSVGString).foldLeft("")((a,b)=> a+"\n"+b)
+      val height=990
+      val width=765
+      val svgStart="<?xml version=\"1.0\" standalone=\"no\"?>\n\n<svg height=\"" +
+        height +
+        "\" width=\"" +
+        width +
+        "\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">"+
+        "\n"
+      val svgEnd="\n</svg>"
+
+      val svgLoc="src/test/resources/pdffigures/page_2_test.svg"
+      File(svgLoc).writeAll(svgStart+"\n"+text+"\n"+svgEnd)
       //results.foreach(x=>println(x.pContent))
+/*
       results.foreach(
         x=>println(s"[path id]: ${x.id}, [pconent]: ${x.pContent}" +
-          s"[pathbb ]: ${
-            x.bb match{
-              case Some(bb) => (bb.x1,bb.y1,bb.x2-bb.x1,bb.y2-bb.y1)
-              case None => None
-            }
-          }" +
+        s"[pathbb ]: ${
+          x.bb match{
+            case Some(bb) => (bb.x1,bb.y1,bb.x2-bb.x1,bb.y2-bb.y1)
+            case None => None
+          }
+        }" +
           s"")
       )
+*/
 
       //results.filter(p=>"path170".equals(p.id)).foreach(x=>println(s"[path content]: ${x.pdContent} [pathcommands]: ${x.pOps} [pathbb] ${x.bb}"))
 
