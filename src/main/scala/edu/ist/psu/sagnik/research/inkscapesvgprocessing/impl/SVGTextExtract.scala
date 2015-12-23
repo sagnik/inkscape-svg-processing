@@ -53,8 +53,8 @@ object SVGTextExtract {
       )
 
 
-    (topLevelTextNodePaths++lowerLevelTextNodepaths).map(x=>SVGCharFactory(x))
-    Seq.empty[SVGChar]
+    (topLevelTextNodePaths++lowerLevelTextNodepaths).map(x=>SVGCharFactory(x)).flatten
+
   }
 
   def iterateOverGroups(tlGs:NodeSeq,textPathGIDs:Seq[TextGroups],gIdMap:Map[String,Seq[String]]):Seq[TextGroups]=
