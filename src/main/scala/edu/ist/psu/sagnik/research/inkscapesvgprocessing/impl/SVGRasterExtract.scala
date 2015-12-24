@@ -30,14 +30,17 @@ object SVGRasterExtract {
           },
           transformOps=TransformParser(x \@ "transform"),
           groups = Seq.empty[SVGGroup],
-          imageDString = x \@ "xlink-href",
+          imageDString = x.attribute("http://www.w3.org/1999/xlink","href") match{
+            case Some(imdata) => imdata.text
+            case _ => ""
+          },
           x= if ((x \@ "x").length>0) (x \@ "x").toFloat else 0f,
           y= if ((x \@ "y").length>0) (x \@ "y").toFloat else 0f,
           width = if ((x \@ "width").length>0) (x \@ "width").toFloat else 1f,
           height=if ((x \@ "height").length>0) (x \@ "height").toFloat else 1f
         )
       )
-
+    // TODO: see http://stackoverflow.com/questions/3542153/how-can-i-get-the-value-of-an-attribute-called-xlinkhref-of-an-xml-node-by-usin
     val lowerLevelRastergGraphicsPaths=
       lowerLevelImagePaths.map(x =>
         SVGRasterIm(
@@ -47,7 +50,10 @@ object SVGRasterExtract {
           },
           transformOps=TransformParser(x.raster \@ "transform"),
           groups = svgGroups.filter(a=>x.gIds.contains(a.id)),
-          imageDString = x.raster \@ "xlink-href",
+          imageDString = x.raster.attribute("http://www.w3.org/1999/xlink","href") match{
+            case Some(imdata) => imdata.text
+            case _ => ""
+          },
           x= if ((x.raster \@ "x").length>0) (x.raster \@ "x").toFloat else 0f,
           y= if ((x.raster \@ "y").length>0) (x.raster \@ "y").toFloat else 0f,
           width = if ((x.raster \@ "width").length>0) (x.raster \@ "width").toFloat else 1f,

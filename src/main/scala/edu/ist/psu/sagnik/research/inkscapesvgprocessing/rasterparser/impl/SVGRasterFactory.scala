@@ -8,9 +8,6 @@ import edu.ist.psu.sagnik.research.inkscapesvgprocessing.rasterparser.model.{SVG
  */
 object SVGRasterFactory {
 
-  def apply(rasterIm: SVGRasterIm):SVGRaster={
-
-  }
   def main(args: Array[String]):Unit={
     val dataLoc="src/test/resources/pdffigures/page_2.svg"
     val textpaths=SVGRasterExtract(dataLoc)

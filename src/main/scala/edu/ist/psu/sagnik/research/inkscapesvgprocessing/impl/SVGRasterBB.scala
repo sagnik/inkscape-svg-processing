@@ -3,6 +3,7 @@ package edu.ist.psu.sagnik.research.inkscapesvgprocessing.impl
 import breeze.linalg.DenseMatrix
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.model.Rectangle
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.rasterparser.model.{SVGRaster, SVGRasterIm}
+import edu.ist.psu.sagnik.research.inkscapesvgprocessing.textparser.model.SVGChar
 
 /**
  * Created by sagnik on 12/24/15.
@@ -54,6 +55,6 @@ object SVGRasterBB {
      rIm.height +
      "\" width=\"" +
      rIm.width +
-     "\" />"
+     "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" />"
 
 }
