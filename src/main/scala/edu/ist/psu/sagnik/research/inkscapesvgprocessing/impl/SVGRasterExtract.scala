@@ -1,7 +1,7 @@
 package edu.ist.psu.sagnik.research.inkscapesvgprocessing.impl
 
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.model.{ImageGroups, SVGGroup}
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.rasterparser.model.{SVGRaster}
+import edu.ist.psu.sagnik.research.inkscapesvgprocessing.rasterparser.model.{SVGRasterIm, SVGRaster}
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.reader.XMLReader
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.transformparser.impl.TransformParser
 
@@ -23,14 +23,13 @@ object SVGRasterExtract {
 
     val topLevelRasterGraphicsPaths=
       topLevelImagePaths.map(x =>
-        SVGRaster(
+        SVGRasterIm(
           id=x.attribute("id") match {
             case Some(idExists) => idExists.text
             case _ => "noID"
           },
           transformOps=TransformParser(x \@ "transform"),
           groups = Seq.empty[SVGGroup],
-          imageString = x.toString,
           imageDString = x \@ "xlink-href",
           x= if ((x \@ "x").length>0) (x \@ "x").toFloat else 0f,
           y= if ((x \@ "y").length>0) (x \@ "y").toFloat else 0f,
@@ -41,14 +40,13 @@ object SVGRasterExtract {
 
     val lowerLevelRastergGraphicsPaths=
       lowerLevelImagePaths.map(x =>
-        SVGRaster(
+        SVGRasterIm(
           id=x.raster.attribute("id") match {
             case Some(idExists) => idExists.text
             case _ => "noID"
           },
           transformOps=TransformParser(x.raster \@ "transform"),
           groups = svgGroups.filter(a=>x.gIds.contains(a.id)),
-          imageString=x.raster.toString,
           imageDString = x.raster \@ "xlink-href",
           x= if ((x.raster \@ "x").length>0) (x.raster \@ "x").toFloat else 0f,
           y= if ((x.raster \@ "y").length>0) (x.raster \@ "y").toFloat else 0f,
@@ -58,8 +56,7 @@ object SVGRasterExtract {
       )
 
 
-    (topLevelRasterGraphicsPaths++lowerLevelRastergGraphicsPaths).foreach(x=>println(x.id,x.groups.map(a=>a.id)))
-    Seq.empty[SVGRaster]
+    (topLevelRasterGraphicsPaths++lowerLevelRastergGraphicsPaths).map(x=>SVGRasterBB(x))
 
   }
 
@@ -72,7 +69,7 @@ object SVGRasterExtract {
           case None => Seq.empty[String]
         }
 
-      val thisImageGIDs=imageGIDs ++ (tlGs.head \ "text").map(x=>ImageGroups(x,newGId +: parentGids))
+      val thisImageGIDs=imageGIDs ++ (tlGs.head \ "image").map(x=>ImageGroups(x,newGId +: parentGids))
       iterateOverGroups(tlGs.tail ++ tlGs.head \"g",thisImageGIDs, gIdMap)
 
     }
