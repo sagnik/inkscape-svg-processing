@@ -28,7 +28,7 @@ class SVGTextOutputTest extends FunSpec {
         "\n"
       val svgEnd="\n</svg>"
 
-      val svgLoc="src/test/resources/pdffigures/page_2_test.svg"
+      val svgLoc="src/test/resources/page_006_cortina_test.svg"
       File(svgLoc).writeAll(svgStart+"\n"+text+"\n"+svgEnd)
       //results.foreach(x=>println(x.pContent))
 /*

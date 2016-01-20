@@ -28,8 +28,8 @@ object SVGCharFactory {
       x= (tspWhole\@"x"), //TODO: possible exceptions
       y= (tspWhole\@"y"),
       charString=tspWhole.text.toCharArray.toList,
-      textPath=tp
-      //tspanStyle = tspWhole \@ "style" TODO: tspan can also contain style, not considering that now.
+      textPath=tp,
+      tspanStyleString = tspWhole \@ "style" //TODO: tspan can also contain style, not considering that now.
     )
 
   def TSpanToChar(ts:Seq[TSpanPath],textXPosition:Float,textYPosition:Float, chars:Seq[SVGChar]):Seq[SVGChar]=
@@ -53,7 +53,7 @@ object SVGCharFactory {
       //TODO: we don't actually have a proper implementation here, because width can't properly be determined from the font size
       val charSeq=
         if (tspy.length==tsp.charString.length){
-          val styleString=tsp.textPath.styleString
+          val styleString=if (tsp.textPath.styleString.isEmpty) tsp.tspanStyleString else tsp.textPath.styleString
           val widthHeight=if ("".equals(styleString)) 10f else styleString.split("font-size:")(1).split("px")(0).toFloat //TODO: possible exception?
           val x=tspx(0)
           tsp.charString.zipWithIndex.map(c=>
@@ -73,7 +73,7 @@ object SVGCharFactory {
           )
         }
         else {
-          val styleString=tsp.textPath.styleString
+          val styleString=if (tsp.textPath.styleString.isEmpty) tsp.tspanStyleString else tsp.textPath.styleString
           val height=if ("".equals(styleString)) 10f else styleString.split("font-size:")(1).split("px")(0).toFloat //TODO: possible exception?
           val y=tspy(0)
           tsp.charString.zipWithIndex.map(c=>
