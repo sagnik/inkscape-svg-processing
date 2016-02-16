@@ -4,7 +4,7 @@ PDF and SVG are both vector graphics, with considerable differences. PDF doesn't
 
 SVG produced by InkScape contains many information such as grouping elements, multiple transformation opertaion such as ``rotate", "scale" etc. This is a fairly complictaed representation. For most purposes, we need bounding boxes for paths (vector graphics), characters and images embedded in the PDF. 
 
-This repository contains SVG parsers (such parsers are available in JavaScript, but not in Scala) that take the an SVG and converts each graphics path, text path and image in that to an object. While the parsers are generic, I have only tested them on SVG produced by InkScape, hence the name. For example, each _text path_ in SVG is converted into a stream of character objects with bounding box and font information. Similarly, each graphics path is converted into an object with commands and transformation matrix. For more details about the data models, see _models_ directory in _pathparser, textparser and rasterparser_ packages. 
+This repository contains SVG parsers (~~such parsers are available in JavaScript, but not in Scala)~~ that take the an SVG and converts each graphics path, text path and image in that to an object. While the parsers are generic, I have only tested them on SVG produced by InkScape, hence the name. For example, each _text path_ in SVG is converted into a stream of character objects with bounding box and font information. Similarly, each graphics path is converted into an object with commands and transformation matrix. For more details about the data models, see _models_ directory in _pathparser, textparser and rasterparser_ packages. 
 
 #### Application and Test
 
