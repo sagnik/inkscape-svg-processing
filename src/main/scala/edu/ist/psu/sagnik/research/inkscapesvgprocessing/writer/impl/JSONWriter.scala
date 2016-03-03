@@ -22,7 +22,7 @@ object JSONWriter {
             strokeLinejoin = returnPattern(x.pContent,"stroke-linejoin:"),
             strokeMiterlimit = returnPattern(x.pContent,"stroke-miterlimit:"),
             strokeDasharray = returnPattern(x.pContent,"stroke-dasharray:"),
-            strokeOpacity = if ("-1".equals(returnPattern(x.pContent,"stroke-opacity:"))) -1f else returnPattern(x.pContent,"stroke-width:").toFloat
+            strokeOpacity = if ("-1".equals(returnPattern(x.pContent,"stroke-opacity:"," "))) -1f else returnPattern(x.pContent,"stroke-opacity:"," ").toFloat
           ),
           pathWholeString = x.pContent
         )
@@ -44,8 +44,7 @@ object JSONWriter {
             fill = returnPattern(x.styleString,"fill:"),
             fillOpacity = if ("-1".equals(returnPattern(x.styleString,"fill-opacity:"))) -1f else returnPattern(x.styleString,"fill-opacity:").toFloat,
             fillRule = returnPattern(x.styleString,"fill-rule:"),
-            stroke = if (x.styleString.contains("stroke")) x.styleString.split("stroke")(1).split(" ")(0) else "-1"
-
+            stroke = returnPattern(x.styleString,"fill-rule:"," ")
           ),
           charWholeString = x.charSVGString
         )
@@ -57,4 +56,8 @@ object JSONWriter {
   }
   def returnPattern(pContent:String,s:String)=
     if (pContent.contains(s)) pContent.split(s)(1).split(";")(0) else "-1"
+
+  def returnPattern(pContent:String,s1:String, s2:String)=
+    if (pContent.contains(s1) && pContent.contains(s2)) pContent.split(s1)(1).split(s2)(0) else "-1"
+
 }
