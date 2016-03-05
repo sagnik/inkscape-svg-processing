@@ -4,6 +4,10 @@ import edu.ist.psu.sagnik.research.inkscapesvgprocessing.model.{Rectangle, SVGPa
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.textparser.model.SVGChar
 import edu.ist.psu.sagnik.research.inkscapesvgprocessing.writer.model.{CharStyle, SVGCharJson, PathStyle, SVGPathJson}
 
+/*
+TODO: This is wrong, see edu.ist.psu.sagnik.research.linegraphcurveseparation.impl.SVGPathExtract for the correct implementation of style info.
+*/
+
 /**
  * Created by szr163 on 3/1/16.
  */
