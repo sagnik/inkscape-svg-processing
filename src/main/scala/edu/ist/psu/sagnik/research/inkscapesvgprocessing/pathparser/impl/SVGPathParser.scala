@@ -1,6 +1,6 @@
-package edu.ist.psu.sagnik.research.inkscapesvgprocessing.pathparser.impl
+package edu.ist.psu.sagnik.research.linegraphcurveseparation.pathparser.impl
 
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.pathparser.model._
+import edu.ist.psu.sagnik.research.linegraphcurveseparation.pathparser.model._
 
 import scala.util.parsing.combinator.RegexParsers
 import scala.language.implicitConversions
@@ -22,13 +22,13 @@ class SVGPathParser extends RegexParsers {
   def digit_sequence: Parser[String]=digit~rep(digit) ^^{case d~ds => if (ds.isEmpty) d else  d+ds.mkString("")} // digit~digit_sequence ^^{case d~ds => println(s"digit ${d} digit sequence: ${ds}"); ds.toString}|digit^^{_.toString} //
 
   /*this is for testing*/
-  /*
-    def number_sequence:Parser[Seq[String]]=digit_sequence~opt(comma_wsp)~rep(digit_sequence)^^
+/*
+    def number_sequence:Parser[Seq[String]]=digit_sequence~opt(comma_wsp)~number_sequence^^
       {
       case n~cw~ns=>if (ns.isEmpty) List(n) else ns:+n
       }|
       digit_sequence^^{List(_)}
-  */
+*/
   /*********************************/
 
   def sign:Parser[String]="""\+|\-""".r ^^{_.toString}
@@ -216,9 +216,9 @@ class SVGPathParser extends RegexParsers {
       elliptical_arc^^{a=>a}
 
   def drawto_commands:Parser[Seq[PathCommand]]=
-    drawto_command~rep(wsp)~rep(drawto_command)^^{
+    drawto_command~rep(wsp)~drawto_commands^^{
       case dc~ws~dcs => if (dcs.isEmpty) List(dc) else dc+:dcs
-    } | drawto_command^^{List(_)}
+    } | drawto_command^^{a=>List(a)}
 
   def moveto_drawto_command_group:Parser[Seq[PathCommand]]=
     moveto~rep(wsp)~opt(drawto_commands)^^{
@@ -243,12 +243,14 @@ class SVGPathParser extends RegexParsers {
 
 object TestSVGPathParser extends SVGPathParser{
   def main(args: Array[String]) = {
-    val c="m 3964.54,3342.8 251.35,0 m -251.35,17.43 0,-34.86 m 251.35,34.86 0,-34.86 m -1742.01,88.84 264.28,637.09 528.57,5.62 528.56,-301.39 264.28,-66.92 m -1585.69,-324.44 0,99.52 m -17.43,-99.52 34.86,0 m -34.86,99.52 34.86,0 m 246.85,498.2 0,178.25 m -17.43,-178.25 34.86,0 m -34.86,178.25 34.86,0 m 511.14,-149.57 0,132.7 m -17.43,-132.7 34.86,0 m -34.86,132.7 34.86,0 m 511.13,-414.41 0,93.9 m -17.43,-93.9 34.86,0 m -34.86,93.9 34.86,0 m 246.85,-144.51 0,60.17 m -17.43,-60.17 34.86,0 m -34.86,60.17 34.86,0"
+    //val c="m 3964.54,3342.8 251.35,0 m -251.35,17.43 0,-34.86 m 251.35,34.86 0,-34.86 m -1742.01,88.84 264.28,637.09 528.57,5.62 528.56,-301.39 264.28,-66.92 m -1585.69,-324.44 0,99.52 m -17.43,-99.52 34.86,0 m -34.86,99.52 34.86,0 m 246.85,498.2 0,178.25 m -17.43,-178.25 34.86,0 m -34.86,178.25 34.86,0 m 511.14,-149.57 0,132.7 m -17.43,-132.7 34.86,0 m -34.86,132.7 34.86,0 m 511.13,-414.41 0,93.9 m -17.43,-93.9 34.86,0 m -34.86,93.9 34.86,0 m 246.85,-144.51 0,60.17 m -17.43,-60.17 34.86,0 m -34.86,60.17 34.86,0"
     //val c="m 3964.54,3342.8 l -1742.01,88.84 264.28,637.09 528.57,5.62 528.56,-301.39 264.28,-66.92"
     //val c="M10 10 C 20 20, 40 20, 50 10 70 20, 120 20, 120 10 120 20, 180 20, 170 10"
     //parse(digit_sequence, "12345") match {
     //  parse(wsp, " ") match {
     //    parse(coordinate_pair, "12    20") match {
+    val c="M 5,5 L 5,15 L 15,15 L 15,5 z L 20,20"
+    //val c="3456 789 2365 1234"
     parse(svg_path, c) match {
       case Success(matched,_) => println(s"[matched]: ${matched}")
       case Failure(msg,_) => println("FAILURE: " + msg)

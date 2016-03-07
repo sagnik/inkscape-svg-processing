@@ -11,7 +11,8 @@ This repository contains SVG parsers (~~such parsers are available in JavaScript
 An application of this package is https://github.com/sagnik/svgimagesfromallenaipdffigures. **System dependencies for this repository are: 1. InkScape (version 0.91, tested on Ubuntu and version 0.47, Mar 4 2015, tested on RedHat) and 2. Pdftoolkit (https://www.pdflabs.com/tools/pdftk-server/), both available for Windows, Mac and Linux systems.** Input for this package is a PDF file containing some figures and tables and a directory containing JSON files with their locations (page number, bounding box in the page). This PDF is split in one page PDFs (using pdftk) and converted to SVG using InkScape. Then, these images are processed  to produce the object oriented representation. Finally, we create the SVG files for the figures and the tables in the PDF. There are multiple benfits of creating such SVG files that will be discussed in a paper sometime later.
 
 To see the application, clone the above mentioned repository and follow the directions there.
-  
+
+To see the **big picture** see http://personal.psu.edu/szr163/hassan/hassan-Figure-2.html   
 ###TODO 
 
 More README to follow, possibly a wiki.
