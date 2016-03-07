@@ -1,6 +1,6 @@
-package edu.ist.psu.sagnik.research.linegraphcurveseparation.pathparser.impl
+package edu.ist.psu.sagnik.research.inkscapesvgprocessing.pathparser.impl
 
-import edu.ist.psu.sagnik.research.linegraphcurveseparation.pathparser.model._
+import edu.ist.psu.sagnik.research.inkscapesvgprocessing.pathparser.model._
 
 import scala.util.parsing.combinator.RegexParsers
 import scala.language.implicitConversions
