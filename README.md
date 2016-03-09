@@ -12,7 +12,7 @@ An application of this package is https://github.com/sagnik/svgimagesfromallenai
 
 To see the application, clone the above mentioned repository and follow the directions there.
 
-To see the **big picture** see http://personal.psu.edu/szr163/hassan/hassan-Figure-2.html   
+For the **big picture** see http://personal.psu.edu/szr163/hassan/hassan-Figure-2.html   
 ###TODO 
 
 More README to follow, possibly a wiki.
