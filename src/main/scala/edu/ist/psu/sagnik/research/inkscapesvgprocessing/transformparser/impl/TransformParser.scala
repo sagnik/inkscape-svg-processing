@@ -1,11 +1,11 @@
-package edu.ist.psu.sagnik.research.inkscapesvgprocessing.transformparser.impl
+package edu.psu.sagnik.research.inkscapesvgprocessing.transformparser.impl
 
 /**
  * Created by sagnik on 12/9/15.
  */
 
 import breeze.linalg._
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.transformparser.model._
+import edu.psu.sagnik.research.inkscapesvgprocessing.transformparser.model._
 import scala.util.parsing.combinator.RegexParsers
 
 class TransformParser extends RegexParsers {

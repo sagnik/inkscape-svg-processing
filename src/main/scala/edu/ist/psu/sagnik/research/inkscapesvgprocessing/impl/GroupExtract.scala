@@ -1,8 +1,8 @@
-package edu.ist.psu.sagnik.research.inkscapesvgprocessing.impl
+package edu.psu.sagnik.research.inkscapesvgprocessing.impl
 
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.model.SVGGroup
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.reader.XMLReader
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.transformparser.impl.TransformParser
+import edu.psu.sagnik.research.inkscapesvgprocessing.model.SVGGroup
+import edu.psu.sagnik.research.inkscapesvgprocessing.reader.XMLReader
+import edu.psu.sagnik.research.inkscapesvgprocessing.transformparser.impl.TransformParser
 
 /**
  * Created by sagnik on 11/11/15.

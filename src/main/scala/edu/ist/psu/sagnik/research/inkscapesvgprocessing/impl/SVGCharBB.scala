@@ -1,8 +1,8 @@
-package edu.ist.psu.sagnik.research.inkscapesvgprocessing.impl
+package edu.psu.sagnik.research.inkscapesvgprocessing.impl
 
 import breeze.linalg.DenseMatrix
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.model.Rectangle
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.textparser.model.SVGChar
+import edu.psu.sagnik.research.inkscapesvgprocessing.model.Rectangle
+import edu.psu.sagnik.research.inkscapesvgprocessing.textparser.model.SVGChar
 
 /**
  * Created by sagnik on 12/17/15.

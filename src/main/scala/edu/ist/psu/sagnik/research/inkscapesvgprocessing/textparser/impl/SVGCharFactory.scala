@@ -1,8 +1,8 @@
-package edu.ist.psu.sagnik.research.inkscapesvgprocessing.textparser.impl
+package edu.psu.sagnik.research.inkscapesvgprocessing.textparser.impl
 
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.impl.{SVGCharBB, SVGTextExtract}
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.model.Rectangle
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.textparser.model.{TSpanPath, TextPath, SVGChar}
+import edu.psu.sagnik.research.inkscapesvgprocessing.impl.{SVGCharBB, SVGTextExtract}
+import edu.psu.sagnik.research.inkscapesvgprocessing.model.Rectangle
+import edu.psu.sagnik.research.inkscapesvgprocessing.textparser.model.{TSpanPath, TextPath, SVGChar}
 
 import scala.xml.Node
 

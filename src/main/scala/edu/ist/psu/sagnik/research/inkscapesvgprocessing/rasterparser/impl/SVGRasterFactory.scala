@@ -1,7 +1,7 @@
-package edu.ist.psu.sagnik.research.inkscapesvgprocessing.rasterparser.impl
+package edu.psu.sagnik.research.inkscapesvgprocessing.rasterparser.impl
 
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.impl.{SVGRasterExtract, SVGTextExtract}
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.rasterparser.model.{SVGRaster, SVGRasterIm}
+import edu.psu.sagnik.research.inkscapesvgprocessing.impl.{SVGRasterExtract, SVGTextExtract}
+import edu.psu.sagnik.research.inkscapesvgprocessing.rasterparser.model.{SVGRaster, SVGRasterIm}
 
 /**
  * Created by sagnik on 12/24/15.

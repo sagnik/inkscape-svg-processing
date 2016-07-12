@@ -1,4 +1,4 @@
-package edu.ist.psu.sagnik.research.inkscapesvgprocessing.reader
+package edu.psu.sagnik.research.inkscapesvgprocessing.reader
 
 import java.io.File
 

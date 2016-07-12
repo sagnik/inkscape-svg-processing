@@ -1,9 +1,9 @@
-package edu.ist.psu.sagnik.research.inkscapesvgprocessing.impl
+package edu.psu.sagnik.research.inkscapesvgprocessing.impl
 
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.model.{PathGroups, SVGGroup, SVGPath}
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.pathparser.impl.SVGPathfromDString
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.reader.XMLReader
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.transformparser.impl.TransformParser
+import edu.psu.sagnik.research.inkscapesvgprocessing.model.{PathGroups, SVGGroup, SVGPath}
+import edu.psu.sagnik.research.inkscapesvgprocessing.pathparser.impl.SVGPathfromDString
+import edu.psu.sagnik.research.inkscapesvgprocessing.reader.XMLReader
+import edu.psu.sagnik.research.inkscapesvgprocessing.transformparser.impl.TransformParser
 
 import scala.xml.{Node, NodeSeq}
 

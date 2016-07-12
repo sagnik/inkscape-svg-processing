@@ -1,10 +1,10 @@
-package edu.ist.psu.sagnik.research.inkscapesvgprocessing.pathparser.model
+package edu.psu.sagnik.research.inkscapesvgprocessing.pathparser.model
 
 /**
  * Created by sagnik on 12/2/15.
  */
 
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.model.Rectangle
+import edu.psu.sagnik.research.inkscapesvgprocessing.model.Rectangle
 
 object EllipseCommandHelper {
 

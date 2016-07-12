@@ -1,16 +1,16 @@
-package edu.ist.psu.sagnik.research.inkscapesvgprocessing.test
+package edu.psu.sagnik.research.inkscapesvgprocessing.test
 
 /**
  * Created by sagnik on 12/23/15.
  */
 
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.impl.{SVGPathExtract}
+import edu.psu.sagnik.research.inkscapesvgprocessing.impl.{SVGPathExtract}
 import org.scalatest.FunSpec
 
 class SVGPathOutputTest extends FunSpec {
 
   describe("testing the SVG output by printing") {
-    import edu.ist.psu.sagnik.research.inkscapesvgprocessing.test.DataLocation._
+    import edu.psu.sagnik.research.inkscapesvgprocessing.test.DataLocation._
     it("should print the path info.") {
       val results=SVGPathExtract(svgFileLoc)
       results.foreach(x=>println(x.pContent))

@@ -1,7 +1,7 @@
-package edu.ist.psu.sagnik.research.inkscapesvgprocessing.model
+package edu.psu.sagnik.research.inkscapesvgprocessing.model
 
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.pathparser.model.PathCommand
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.transformparser.model.TransformCommand
+import edu.psu.sagnik.research.inkscapesvgprocessing.pathparser.model.PathCommand
+import edu.psu.sagnik.research.inkscapesvgprocessing.transformparser.model.TransformCommand
 
 import scala.xml.{Node, Elem}
 

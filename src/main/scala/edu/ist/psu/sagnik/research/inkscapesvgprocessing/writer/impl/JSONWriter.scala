@@ -1,11 +1,11 @@
-package edu.ist.psu.sagnik.research.inkscapesvgprocessing.writer.impl
+package edu.psu.sagnik.research.inkscapesvgprocessing.writer.impl
 
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.model.{Rectangle, SVGPath}
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.textparser.model.SVGChar
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.writer.model.{CharStyle, SVGCharJson, PathStyle, SVGPathJson}
+import edu.psu.sagnik.research.inkscapesvgprocessing.model.{Rectangle, SVGPath}
+import edu.psu.sagnik.research.inkscapesvgprocessing.textparser.model.SVGChar
+import edu.psu.sagnik.research.inkscapesvgprocessing.writer.model.{CharStyle, SVGCharJson, PathStyle, SVGPathJson}
 
 /*
-TODO: This is wrong, see edu.ist.psu.sagnik.research.linegraphcurveseparation.impl.SVGPathExtract for the correct implementation of style info.
+TODO: This is wrong, see edu.psu.sagnik.research.linegraphcurveseparation.impl.SVGPathExtract for the correct implementation of style info.
 */
 
 /**

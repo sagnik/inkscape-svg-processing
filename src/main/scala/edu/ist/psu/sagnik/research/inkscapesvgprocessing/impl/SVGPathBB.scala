@@ -1,10 +1,10 @@
-package edu.ist.psu.sagnik.research.inkscapesvgprocessing.impl
+package edu.psu.sagnik.research.inkscapesvgprocessing.impl
 
 import breeze.linalg._
 
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.model.{SVGPath, Rectangle}
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.pathparser.impl.SVGPathfromDString
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.pathparser.model.{MovePath, CordPair}
+import edu.psu.sagnik.research.inkscapesvgprocessing.model.{SVGPath, Rectangle}
+import edu.psu.sagnik.research.inkscapesvgprocessing.pathparser.impl.SVGPathfromDString
+import edu.psu.sagnik.research.inkscapesvgprocessing.pathparser.model.{MovePath, CordPair}
 
 import scala.None
 

@@ -1,7 +1,7 @@
-package edu.ist.psu.sagnik.research.inkscapesvgprocessing.textparser.model
+package edu.psu.sagnik.research.inkscapesvgprocessing.textparser.model
 
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.model.{Rectangle, SVGGroup}
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.transformparser.model.TransformCommand
+import edu.psu.sagnik.research.inkscapesvgprocessing.model.{Rectangle, SVGGroup}
+import edu.psu.sagnik.research.inkscapesvgprocessing.transformparser.model.TransformCommand
 
 /**
  * Created by szr163 on 12/13/15.

@@ -1,6 +1,6 @@
-package edu.ist.psu.sagnik.research.inkscapesvgprocessing.test
+package edu.psu.sagnik.research.inkscapesvgprocessing.test
 
-import edu.ist.psu.sagnik.research.inkscapesvgprocessing.impl.{SVGRasterExtract, SVGPathExtract}
+import edu.psu.sagnik.research.inkscapesvgprocessing.impl.{SVGRasterExtract, SVGPathExtract}
 import org.scalatest.FunSpec
 
 import scala.reflect.io.File
@@ -11,7 +11,7 @@ import scala.reflect.io.File
 class SVGRasterOutputTest extends FunSpec {
 
   describe("testing the SVG output by printing") {
-    import edu.ist.psu.sagnik.research.inkscapesvgprocessing.test.DataLocation._
+    import edu.psu.sagnik.research.inkscapesvgprocessing.test.DataLocation._
     it("should print the path info.") {
       val results = SVGRasterExtract(svgFileLoc)
       val text=results.map(x=>x.imageString).foldLeft("")((a,b)=> a+"\n"+b)

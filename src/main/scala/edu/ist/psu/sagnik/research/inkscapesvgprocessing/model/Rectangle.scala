@@ -1,4 +1,4 @@
-package edu.ist.psu.sagnik.research.inkscapesvgprocessing.model
+package edu.psu.sagnik.research.inkscapesvgprocessing.model
 
 import scala.language.implicitConversions
 /**
