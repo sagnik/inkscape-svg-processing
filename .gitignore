@@ -8,7 +8,6 @@ data/
 *.class
 *.log
 *.swp
-project/
 .idea*
 HERE*
 LOG*
