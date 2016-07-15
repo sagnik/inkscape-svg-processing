@@ -1,7 +1,7 @@
 version in ThisBuild := {
   val major = 0
   val minor = 0
-  val patch = 1
+  val patch = 2
   s"$major.$minor.$patch"
 } //minor changes in PathStyle
 
