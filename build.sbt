@@ -3,7 +3,7 @@ version in ThisBuild := {
   val minor = 0
   val patch = 1
   s"$major.$minor.$patch"
-}
+} //minor changes in PathStyle
 
 scalaVersion in ThisBuild := "2.11.8"
 

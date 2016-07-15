@@ -19,14 +19,18 @@ object JSONWriter {
           bb=x.bb match{case Some(bb) => bb; case None => Rectangle(0f,0f,0f,0f);},
           pathDString=x.pdContent,
           pathStyle = PathStyle(
+
             fill= returnPattern(x.pContent,"fill:"),
+            fillRule = returnPattern(x.pContent,"fill-rule:"),
             stroke= returnPattern(x.pContent,"stroke:"),
-            strokeWidth = if ("-1".equals(returnPattern(x.pContent,"stroke-width:"))) -1f else returnPattern(x.pContent,"stroke-width:").toFloat ,
+            strokeWidth = returnPattern(x.pContent,"stroke-width:"),
             strokeLinecap = returnPattern(x.pContent,"stroke-linecap:"),
             strokeLinejoin = returnPattern(x.pContent,"stroke-linejoin:"),
             strokeMiterlimit = returnPattern(x.pContent,"stroke-miterlimit:"),
             strokeDasharray = returnPattern(x.pContent,"stroke-dasharray:"),
-            strokeOpacity = if ("-1".equals(returnPattern(x.pContent,"stroke-opacity:"," "))) -1f else returnPattern(x.pContent,"stroke-opacity:"," ").toFloat
+            strokeOpacity = returnPattern(x.pContent,"stroke-opacity:"," "),
+            fillOpacity = returnPattern(x.pContent,"fill-opacity:"," "),
+            strokeDashoffset = returnPattern(x.pContent,"stroke-dashoffset:")
           ),
           pathWholeString = x.pContent
         )
@@ -41,12 +45,12 @@ object JSONWriter {
           charStyle=CharStyle(
             fontVariant = returnPattern(x.styleString,"font-variant:"),
             fontWeight = returnPattern(x.styleString,"font-weight:"),
-            fontSize = if ("-1".equals(returnPattern(x.styleString,"font-size:"))) -1f else returnPattern(x.styleString,"font-size:").substring(0,returnPattern(x.styleString,"font-size:").length-2).toFloat,
+            fontSize = returnPattern(x.styleString,"font-size:") match {case Some(s) => Some(s.substring(0,s.length-2)) case _ => None},
             fontFamily=returnPattern(x.styleString,"font-family:"),
             inkscapeFontSpecification=returnPattern(x.styleString,"-inkscape-font-specification:"),
             writingMode = returnPattern(x.styleString,"writing-mode:"),
             fill = returnPattern(x.styleString,"fill:"),
-            fillOpacity = if ("-1".equals(returnPattern(x.styleString,"fill-opacity:"))) -1f else returnPattern(x.styleString,"fill-opacity:").toFloat,
+            fillOpacity = returnPattern(x.styleString,"fill-opacity:"),
             fillRule = returnPattern(x.styleString,"fill-rule:"),
             stroke = returnPattern(x.styleString,"fill-rule:"," ")
           ),
@@ -59,9 +63,9 @@ object JSONWriter {
 
   }
   def returnPattern(pContent:String,s:String)=
-    if (pContent.contains(s)) pContent.split(s)(1).split(";")(0) else "-1"
+    if (pContent.contains(s)) Some(pContent.split(s)(1).split(";")(0)) else None
 
   def returnPattern(pContent:String,s1:String, s2:String)=
-    if (pContent.contains(s1) && pContent.contains(s2)) pContent.split(s1)(1).split(s2)(0) else "-1"
+    if (pContent.contains(s1) && pContent.contains(s2)) Some(pContent.split(s1)(1).split(s2)(0)) else None
 
 }
