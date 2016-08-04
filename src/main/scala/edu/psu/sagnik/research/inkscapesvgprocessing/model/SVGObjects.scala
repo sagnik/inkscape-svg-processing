@@ -18,8 +18,15 @@ case class TextGroups(textNode:Node,gIds:Seq[String])
 case class ImageGroups(raster:Node,gIds:Seq[String])
 
 /* Data models for SVG paths*/
-case class SVGPath(id:String, pdContent:String, pContent:String, pOps:Seq[PathCommand],
-                   groups:Seq[SVGGroup], transformOps:Seq[TransformCommand], bb:Option[Rectangle])
+case class SVGPath(
+                    id:String,
+                    pdContent:String,
+                    pContent:String,
+                    pOps:Seq[PathCommand],
+                    groups:Seq[SVGGroup],
+                    transformOps:Seq[TransformCommand],
+                    bb:Option[Rectangle]
+                  )
 
 /* Data models for SVG groups*/
 case class SVGGroup(id:String, gtContent:String, gContent:String, transformOps:Seq[TransformCommand])

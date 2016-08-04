@@ -1,8 +1,8 @@
 ## InkScapeSVG to PDFObjects
 
-PDF and SVG are both vector graphics, with considerable differences. PDF doesn't have a flat **object oriented representation** making it extremely hard to process. This repository contains Scala code for generating such a representation from PDFs. We expect an SVG file as the input. This SVG is produced by InkScape by converting a page of a PDF (see `src/test/resources/pg_0006.svg` for an example). 
+PDF and SVG are both vector graphics, with considerable differences. PDF doesn't have a flat **object oriented representation** making it extremely hard to process. This repository contains Scala code for generating such a representation from PDFs. We expect an SVG file as the input. This SVG is produced by InkScape by converting a page of a PDF (see [this](`src/test/resources/pg_0006.svg`) for an example). 
 
-SVG produced by InkScape contains many information such as grouping elements, multiple transformation opertaions such as "rotate", "scale" etc. This is a fairly complicated hierarchical representation, as commonly found in most XML files. For most purposes, we need the bounding boxes for the paths, characters and images embedded in the PDF. SVG standard doesn't provide such bounding boxes; they must be calculated.
+SVG produced by InkScape contains many information such as grouping elements, multiple transformation operations such as "rotate", "scale" etc. This is a fairly complicated hierarchical representation, as commonly found in most XML files. For most purposes, we need the bounding boxes for the paths, characters and images embedded in the PDF. SVG standard doesn't provide such bounding boxes; they must be calculated.
 
 This repository contains parser combinators (SVG operations follow EBNF syntax) that take an InkScape SVG and convert each graphics path, text path and image to an object. The hierarchical tree structure is flattened first; for each path, character and image we find out the groups it belongs to. 
 
@@ -10,7 +10,7 @@ Each _text path_ in the SVG is then converted into a stream of character objects
 
 Each _graphics path_ is converted into an object with a sequence of path commands, sequence of transformation matrices and a bounding box. The bounding box calculation takes all transform operations (including the ones coming from groups) into consideration. 
 
-For more details about the data models, see _models_ directory in _pathparser, textparser and rasterparser_ packages. Scala offers excellent libraries for writing parser combinators (one of the reasons it is heavily used in DSLs). While the parsers are _fairly_ generic, I have only tested them on SVGs produced by InkScape, hence the name. 
+For more details about the data models, see _models_ directories in _pathparser, textparser and rasterparser_ packages. Scala offers excellent libraries for writing parser combinators (one of the reasons it is heavily used in DSLs). While the parsers are _fairly_ generic, I have only tested them on SVGs produced by InkScape, hence the name. 
 
 
 ### Application and Test
@@ -21,7 +21,7 @@ An application of this package is https://github.com/sagnik/svgimagesfromallenai
 
 To see the application, clone the above mentioned repository and follow the directions there.
 
-You can use this repository by adding the following library dependency `"edu.psu.sagnik.research" %% "inkscapesvgprocessing" % "0.0.1"`. Make sure you have https://oss.sonatype.org/content/repositories/releases/ in your resolvers.
+You can use this repository by adding the following library dependency `"edu.psu.sagnik.research" %% "inkscapesvgprocessing" % "<current version number from Build.sbt>"`. Make sure you have https://oss.sonatype.org/content/repositories/releases/ in your resolvers.
 
 ### TODO 
 
