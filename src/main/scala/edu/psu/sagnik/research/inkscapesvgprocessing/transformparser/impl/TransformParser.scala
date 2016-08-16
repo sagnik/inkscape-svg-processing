@@ -109,8 +109,8 @@ class TransformParser extends RegexParsers {
       skewY^^{a=>TransformCommand(a.command,getMatrix[SkewYOp](a))}
 
   def transforms:Parser[Seq[TransformCommand]]=
-    transform~comma_wsp~rep(comma_wsp)~transforms^^{
-      case t~cw1~cw2~ts=> if (ts.isEmpty) List(t) else t+:ts
+    transform~rep(comma_wsp)~transforms^^{
+      case t~cw2~ts=> if (ts.isEmpty) List(t) else t+:ts
     }|
       transform^^{a=>List(a)}
 
@@ -221,7 +221,8 @@ object TransformParser extends TransformParser{
 
 object TestTransformParser extends TransformParser{
   def main(args: Array[String]) = {
-    val command="translate(-10,-20) scale(2) rotate(45) translate(5,10)"
+    //val command="translate(-10,-20) scale(2) rotate(45) translate(5,10)"
+    val command="translate(94.09875 322.182437)scale(0.1 -0.1)"
     parse(transform_list,command) match {
       case Success(matched,_) => matched match { case Some(commands) => commands.foreach(println); case _ => println("None")}
       case Failure(msg,_) => println("FAILURE: " + msg)

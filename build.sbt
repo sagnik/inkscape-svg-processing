@@ -1,9 +1,9 @@
 version in ThisBuild := {
   val major = 0
   val minor = 0
-  val patch = 2
+  val patch = 3
   s"$major.$minor.$patch"
-} //minor changes in PathStyle
+} //fixed transform parsing error
 
 scalaVersion in ThisBuild := "2.11.8"
 
