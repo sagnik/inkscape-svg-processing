@@ -14,7 +14,7 @@ object SVGPathfromDString extends SVGPathParser{
       case Success(matched,_) => {
         val pathElems = matched
         if (pathElems.isEmpty) Seq.empty[PathCommand]
-        else if (!pathElems(0).isInstanceOf[Move])
+        else if (!pathElems.head.isInstanceOf[Move])
           Seq.empty[PathCommand]
         else {
           val pathElemsMod = pathElems.map(x => parseMoveCommand(x)).flatten.zipWithIndex.map(x => {
@@ -24,8 +24,10 @@ object SVGPathfromDString extends SVGPathParser{
 
           })
           pathElemsMod.zipWithIndex.map(x => {
-            if (x._2 == (pathElemsMod.length-1) && x._1.isInstanceOf[Close])
-              pathElemsMod(0)
+            if (x._2 == (pathElemsMod.length-1) && x._1.isInstanceOf[Close]) {
+              val move=pathElemsMod.head.asInstanceOf[Move]
+              Line(isAbsolute = true, args=Seq(LinePath(move.args.head.eP)))
+            }
             else x._1
 
           })
